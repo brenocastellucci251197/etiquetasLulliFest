@@ -1,0 +1,3657 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>LULLIFEST</title>
+<style>
+  :root {
+    --yellow: #FFE600;
+    --dark: #1c1c1c;
+    --gray: #6b6b6b;
+    --light-gray: #f5f5f5;
+    --border: #e0e0e0;
+    --green: #00a650;
+    --red: #d32f2f;
+  --pink: #e91e63;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+    margin: 0;
+    background: var(--light-gray);
+    color: var(--dark);
+  }
+  header {
+    background: var(--dark);
+    padding: 20px 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  header .logo-dot {
+    width: 12px; height: 12px; border-radius: 50%;
+    background: var(--yellow);
+  }
+  header h1 {
+    color: #fff;
+    font-size: 18px;
+    margin: 0;
+    font-weight: 600;
+  }
+  .container {
+    max-width: 720px;
+    margin: 32px auto;
+    padding: 0 20px 60px;
+  }
+  .card {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 28px;
+    margin-bottom: 20px;
+  }
+  .card h2 {
+    font-size: 15px;
+    margin: 0 0 12px;
+    color: var(--gray);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  #dropzone {
+    border: 2px dashed var(--border);
+    border-radius: 10px;
+    padding: 40px 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s;
+  }
+  #dropzone.dragover {
+    border-color: var(--yellow);
+    background: #fffde7;
+  }
+  #dropzone p { margin: 6px 0; color: var(--gray); }
+  #dropzone .big { font-size: 16px; color: var(--dark); font-weight: 500; }
+  #dropzone .small { font-size: 13px; }
+  button, .btn {
+    background: var(--yellow);
+    border: none;
+    border-radius: 8px;
+    padding: 12px 20px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    color: var(--dark);
+    display: inline-block;
+    text-decoration: none;
+  }
+  button:disabled { opacity: 0.5; cursor: not-allowed; }
+  #status {
+    margin-top: 16px;
+    font-size: 14px;
+    color: var(--gray);
+    white-space: pre-line;
+  }
+  #status.error { color: var(--red); }
+  #status.success { color: var(--green); font-weight: 600; }
+  #titlesPreview { margin-top: 16px; }
+  .title-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+  }
+  .title-row:last-child { border-bottom: none; }
+  .title-row .venda { color: var(--gray); white-space: nowrap; font-variant-numeric: tabular-nums; }
+  .title-row .titulo { text-align: right; font-weight: 500; }
+  #downloadArea { display: none; margin-top: 20px; text-align: center; }
+  #downloadArea .btn { background: var(--green); color: #fff; padding: 14px 28px; font-size: 15px; }
+  .steps { font-size: 13px; color: var(--gray); line-height: 1.7; }
+  .steps b { color: var(--dark); }
+  .opcoes {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 10px 16px;
+    margin: 4px 0 14px;
+  }
+  .opcoes label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    cursor: pointer;
+    user-select: none;
+  }
+  .opcoes input { width: 16px; height: 16px; accent-color: var(--dark); cursor: pointer; }
+  .campo { margin-top: 16px; }
+  .campo > span {
+    display: block;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--gray);
+    margin-bottom: 6px;
+  }
+  .campo select, .campo input[type="text"] {
+    width: 100%;
+    padding: 10px 12px;
+    font-size: 14px;
+    font-family: inherit;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: #fff;
+    color: var(--dark);
+  }
+  .dica { font-size: 12px; color: var(--gray); margin: 0 0 4px; line-height: 1.6; }
+  .par-linha {
+    display: flex; align-items: center; gap: 14px;
+    padding: 10px 0; border-bottom: 1px solid var(--border);
+  }
+  .par-linha img {
+    width: 260px; border: 1px solid var(--border); border-radius: 6px;
+    background: #fff; flex-shrink: 0;
+  }
+  .par-linha > div { flex: 1; min-width: 0; }
+  .par-num { display: block; font-size: 12px; color: var(--gray); margin-bottom: 6px; }
+  .par-linha select {
+    width: 100%; padding: 9px 10px; font-size: 13px; font-family: inherit;
+    border: 1px solid var(--border); border-radius: 8px; background: #fff; color: var(--dark);
+  }
+  @media (max-width: 620px) {
+    .par-linha { flex-direction: column; align-items: stretch; }
+    .par-linha img { width: 100%; }
+  }
+  .teste-saida { margin-top: 12px; padding: 12px; background: #fff4f8; border: 1px solid #f8bbd0; border-radius: 8px; font-size: 14px; font-weight: 600; min-height: 20px; white-space: pre-line; }
+  .teste-saida.vazio { color: var(--gray); font-weight: 400; background: var(--light-gray); border-color: var(--border); }
+  .resumo-tab { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 8px; }
+  .resumo-tab th, .resumo-tab td { text-align: left; padding: 7px 6px; border-bottom: 1px solid var(--border); }
+  .resumo-tab td.num { text-align: right; font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .resumo-tab tr.alerta td { color: var(--red); }
+  .linha-dupla { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 520px) { .linha-dupla { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo-dot"></div>
+  <h1>LULLIFEST — Etiquetas e caixas por cor <span style="font-size:13px;font-weight:500;color:#888;vertical-align:middle">versão 26/10 · 13h45</span></h1>
+</header>
+
+<div class="container">
+
+  <div class="card">
+    <h2>Como usar</h2>
+    <div class="steps">
+      <b>Mercado Livre:</b> ative "Incluir folha de controle de pacotes", baixe o PDF normalmente (etiqueta + DANFE) e solte aqui.<br/><br/>
+      <b>Shopee — jeito mais simples (recomendado):</b> em "Gerar Documentos de Envio", marque só <b>Etiqueta de Envio e Lista de Empacotamento</b> em <b>PDF</b>. Vem tudo num arquivo só: cada etiqueta já traz o checklist dela embaixo, e o nº do pedido aparece nos dois — dá pra casar sem erro. Solte esse PDF aqui e pronto.<br/><br/>
+      <b>Shopee — alternativa:</b> <b>Apenas a Etiqueta de Envio</b> (PDF ou ZPL) junto com <b>Apenas a Lista de Empacotamento</b> em <b>Excel</b>. Solte os dois de uma vez, ou arraste o <b>.zip</b> que a Shopee baixa, que ele abre sozinho.<br/><br/>
+      Pode soltar vários arquivos juntos; cada um é identificado automaticamente.<br/><br/>
+      <b>Nos dois casos:</b> a folha de controle / checklist / lista de produtos serve só para ler os itens e <b>nunca sai no PDF final</b>.
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>O que mostrar na etiqueta</h2>
+    <div class="opcoes">
+      <label><input type="checkbox" id="fNome" checked /> Nome do produto</label>
+      <label><input type="checkbox" id="fVariacao" checked /> Variação</label>
+      <label><input type="checkbox" id="fQtd" checked /> Quantidade</label>
+      <label><input type="checkbox" id="fSku" checked /> SKU</label>
+      <label><input type="checkbox" id="fSkuPai" /> SKU de referência (pai)</label>
+      <label><input type="checkbox" id="fObs" /> Observações do cliente</label>
+    </div>
+    <p class="dica">
+      Deixando só <b>SKU</b> e <b>Quantidade</b>, quem manuseia o pacote não vê o que tem dentro.<br/>
+      <i>SKU pai</i> e <i>observações do cliente</i> só existem na lista de empacotamento em Excel da Shopee — nos outros formatos eles são ignorados.
+    </p>
+
+    <div class="linha-dupla">
+      <label class="campo">
+        <span>Ordenar as etiquetas por</span>
+        <select id="ordenacao">
+          <option value="">Ordem original</option>
+          <option value="sku">SKU</option>
+          <option value="variacao">Variação</option>
+          <option value="produto">Nome do produto</option>
+          <option value="qtd">Quantidade</option>
+        </select>
+      </label>
+      <label class="campo">
+        <span>Tamanho do texto</span>
+        <select id="tamanhoFonte">
+          <option value="auto">Automático</option>
+          <option value="grande">Maior</option>
+          <option value="pequeno">Menor</option>
+        </select>
+      </label>
+    </div>
+
+    <label class="campo">
+      <span>Mensagem no fim da etiqueta (opcional)</span>
+      <input type="text" id="mensagem" maxlength="120" placeholder="Ex.: Obrigado pela compra! Avalie nossa loja :)" />
+    </label>
+  </div>
+
+  <div class="card" style="border-color:#f8bbd0">
+    <h2>Separação em caixas — Lulli Fest</h2>
+    <div class="opcoes">
+      <label><input type="checkbox" id="lAtivo" checked /> Converter forminhas em caixas</label>
+      <label><input type="checkbox" id="lMostrarUn" checked /> Mostrar as unidades junto</label>
+      <label><input type="checkbox" id="lTrocarTitulo" checked /> Trocar o título longo pelo modelo</label>
+    </div>
+    <p class="dica">
+      Lê o <b>modelo</b> e as <b>unidades</b> do título, as <b>cores</b> da variação (ou do título, depois da palavra “cores”),
+      divide igualmente entre as cores e multiplica pela quantidade comprada. Ex.:
+      <i>120 forminha p doces finos Panton - cores off white = laranja kraft - Pistache escuro</i> →
+      <b>PANTON: 1 CX OFF WHITE + 1 CX LARANJA KRAFT + 1 CX PISTACHE ESCURO</b>.
+      Quando a conta não fecha em caixa inteira, a etiqueta sai com <b>CONFERIR</b>.
+    </p>
+    <div class="linha-dupla">
+      <label class="campo">
+        <span>Unidades por caixa</span>
+        <input type="text" id="lCaixa" value="40" inputmode="numeric" />
+      </label>
+      <label class="campo">
+        <span>Só converte títulos com (separe por vírgula)</span>
+        <input type="text" id="lIncluir" value="forminha" placeholder="vazio = todos" />
+      </label>
+    </div>
+    <label class="campo">
+      <span>Nunca converte títulos com (separe por vírgula)</span>
+      <input type="text" id="lExcluir" value="acetato" />
+    </label>
+    <label class="campo">
+      <span>Modelos de forminha (separe por vírgula) — quando o título tem um deles, é esse o nome que sai</span>
+      <input type="text" id="lModelos" value="Bali Borda, Borda Bali=Bali Borda, Bali sem borda=Bali, Borda=Bali Borda, Bali, Dubai, Beauty, Melissa, Paris, Scrad 3D, Scrad=Scrad 3D, Nobile, Panton, Pompom, Pom Pom=Pompom" />
+    </label>
+    <p class="dica">Use <b>como aparece=nome na etiqueta</b> pra apelidos: <i>Bali sem borda=Bali</i>, <i>Scrad=Scrad 3D</i>.</p>
+    <label class="campo">
+      <span>Caixa com outra quantidade, por modelo (opcional)</span>
+      <input type="text" id="lCaixaModelo" value="Beauty=24, Pompom=25" placeholder="Ex.: Beauty=24 — o resto usa a caixa padrão acima" />
+    </label>
+    <div class="linha-dupla">
+      <label class="campo">
+        <span>Corrigir nome de cor (use “Modelo: errado=certo” pra valer só num modelo)</span>
+        <input type="text" id="lTrocaCor" value="Verde Claro=Pistache Claro, Verde Escuro=Pistache Escuro, Panton: Laranja=Laranja Kraft, Panton: Pistache=Pistache Claro" />
+      </label>
+      <label class="campo">
+        <span>…só nestes modelos (vazio = todos)</span>
+        <input type="text" id="lTrocaCorModelos" value="Bali, Bali Borda, Panton" />
+      </label>
+    </div>
+    <label class="campo">
+      <span>Modelos de cor dupla (ex.: Pompom “Branco e Rosa” = 1 forminha de 2 cores, não divide a caixa)</span>
+      <input type="text" id="lCorDupla" value="Pompom, Beauty" />
+    </label>
+    <label class="campo">
+      <span>Abreviações de cor (SKU/variação) — abreviação=nome completo</span>
+      <input type="text" id="lAbrev" value="OffW=Off White, OW=Off White, Pc=Pistache Claro, Pe=Pistache Escuro, PistacheC=Pistache Claro, PistacheCl=Pistache Claro, Pclaro=Pistache Claro, PistacheE=Pistache Escuro, PistacheEs=Pistache Escuro, PistacheEsc=Pistache Escuro, Pescuro=Pistache Escuro, Vm=Verde Musgo, Vmusgo=Verde Musgo, LKraft=Laranja Kraft, LK=Laranja Kraft" />
+    </label>
+    <label class="campo">
+      <span>Cores compostas — 2ª palavra que NÃO é outra cor (ex.: “Azul-celeste” = 1 cor só)</span>
+      <input type="text" id="lCompostas" value="Celeste, Água, Limão, Chá, Turquesa, Oliva, Musgo, Menta, Royal, Marinho, Tiffany, Candy, Bandeira, Militar, Petróleo, Piscina, Quente" />
+    </label>
+    <label class="campo">
+      <span>Palavra do título que NÃO é cor, por modelo (ex.: Beauty=Ouro → o “Ouro” do título da Beauty é a borda, ignora)</span>
+      <input type="text" id="lNaoCor" value="Beauty=Ouro, Beauty=Dourado" placeholder="Ex.: Borda Bali=Ouro" />
+    </label>
+    <label class="campo">
+      <span>Modelo padrão — usado quando título, variação e SKU não trazem nenhum modelo da lista</span>
+      <input type="text" id="lModeloPadrao" value="Bali" placeholder="vazio = tenta deduzir pelo título" />
+    </label>
+
+    <div class="campo" style="margin-top:22px">
+      <span>Testar um anúncio (sem precisar de PDF)</span>
+      <div class="linha-dupla">
+        <input type="text" id="tTitulo" placeholder="Título — ex.: Forminha Nº 5 Papel 160 un Kit 4 Cores" style="width:100%;padding:10px 12px;font-size:14px;border:1px solid var(--border);border-radius:8px" />
+        <div style="display:flex;gap:8px">
+          <input type="text" id="tVar" placeholder="Variação — ex.: Preta/Dourada" style="flex:1;min-width:0;padding:10px 12px;font-size:14px;border:1px solid var(--border);border-radius:8px" />
+          <input type="text" id="tQtd" value="1" placeholder="Qtd" style="width:60px;padding:10px 12px;font-size:14px;border:1px solid var(--border);border-radius:8px" />
+        </div>
+      </div>
+      <div id="tSaida" class="teste-saida vazio">Digite um título acima para ver como fica na etiqueta.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Arquivos</h2>
+    <div id="dropzone">
+      <p class="big">Solte os arquivos aqui</p>
+      <p class="small">PDF, ZPL (.txt), Excel (.xlsx) ou o .zip da Shopee — pode ser mais de um</p>
+    </div>
+    <input type="file" id="fileInput" accept=".pdf,.txt,.zpl,.prn,.xlsx,.xls,.zip" multiple hidden />
+    <div id="fileList"></div>
+    <div id="status"></div>
+    <div id="titlesPreview"></div>
+    <div id="downloadArea">
+      <a id="downloadLink" class="btn" download="etiquetas-com-titulo.pdf">Baixar PDF com os títulos</a>
+    </div>
+  </div>
+
+</div>
+
+<script src="https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.min.js"></script>
+<script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+<script src="https://unpkg.com/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script src="https://unpkg.com/jszip@3.10.1/dist/jszip.min.js"></script>
+<script src="https://unpkg.com/pako@2.1.0/dist/pako.min.js"></script>
+<script>
+pdfjsLib.GlobalWorkerOptions.workerSrc = "https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js";
+
+const RENDER_SCALE = 3;
+
+// Resolução nativa da Elgin L42 Pro / etiquetas térmicas Shopee: 203 dpi.
+const ZPL_DPI = 203;
+
+const dropzone = document.getElementById("dropzone");
+const fileInput = document.getElementById("fileInput");
+const statusEl = document.getElementById("status");
+const fileListEl = document.getElementById("fileList");
+const titlesPreviewEl = document.getElementById("titlesPreview");
+const downloadArea = document.getElementById("downloadArea");
+const downloadLink = document.getElementById("downloadLink");
+
+// Quando a página roda publicada no Claude, o link de download comum é
+// bloqueado; aí o botão usa o "downloads" do Claude (pede confirmação ao
+// usuário). Aberta como arquivo no computador, o link funciona normal.
+let ultimoPdf = null;
+let salvarClaude = null;
+try {
+  if (window.claude && typeof window.claude.use === "function") {
+    window.claude.use("downloads").then((d) => { salvarClaude = d; }).catch(() => {});
+  }
+} catch (e) {}
+downloadLink.addEventListener("click", async (ev) => {
+  if (!salvarClaude || !ultimoPdf) return; // fora do Claude: download normal
+  ev.preventDefault();
+  try {
+    await salvarClaude.save({ filename: ultimoPdf.nome, data: ultimoPdf.blob });
+  } catch (err) {
+    const code = err && err.code;
+    if (code === "declined") return;
+    if (code === "rate_limited") { setStatus("Já tem uma confirmação de download aberta — confirme ou feche ela e clique de novo.", "error"); return; }
+    setStatus("Não consegui baixar por aqui (" + (code || "erro") + "). Abra a ferramenta pelo arquivo .html no computador.", "error");
+  }
+});
+
+function setStatus(text, kind) {
+  statusEl.textContent = text;
+  statusEl.className = kind || "";
+}
+
+// ------------------------------------------------------------------
+// Opções escolhidas pelo usuário
+// ------------------------------------------------------------------
+
+const CAMPOS_CHECK = ["fNome", "fVariacao", "fQtd", "fSku", "fSkuPai", "fObs", "lAtivo", "lMostrarUn", "lTrocarTitulo"];
+const CAMPOS_TEXTO = ["ordenacao", "tamanhoFonte", "mensagem", "lCaixa", "lIncluir", "lExcluir", "lModelos", "lModeloPadrao", "lCaixaModelo", "lNaoCor", "lTrocaCor", "lTrocaCorModelos", "lCorDupla", "lCompostas", "lAbrev"];
+
+// Tamanhos de fonte: [alvo p/ calcular a faixa, máximo, mínimo]
+const TAMANHOS = {
+  auto: [8, 11, 5.5],
+  grande: [10, 14, 7],
+  pequeno: [6.5, 8.5, 5],
+};
+
+function lerConfig() {
+  const v = (id) => document.getElementById(id);
+  const [alvo, max, min] = TAMANHOS[v("tamanhoFonte").value] || TAMANHOS.auto;
+  return {
+    nome: v("fNome").checked,
+    variacao: v("fVariacao").checked,
+    qtd: v("fQtd").checked,
+    sku: v("fSku").checked,
+    skuPai: v("fSkuPai").checked,
+    obs: v("fObs").checked,
+    ordenacao: v("ordenacao").value,
+    mensagem: v("mensagem").value.trim(),
+    tamAlvo: alvo,
+    tamMax: max,
+    tamMin: min,
+    lulli: v("lAtivo").checked,
+    lMostrarUn: v("lMostrarUn").checked,
+    caixa: Math.max(1, parseInt(v("lCaixa").value, 10) || 40),
+    incluir: listaParaRegex(v("lIncluir").value),
+    excluir: listaParaRegex(v("lExcluir").value),
+    modelos: v("lModelos").value,
+    caixaModelo: v("lCaixaModelo").value,
+    naoCor: v("lNaoCor").value,
+    trocaCor: v("lTrocaCor").value,
+    trocaCorModelos: v("lTrocaCorModelos").value,
+    corDupla: v("lCorDupla").value,
+    compostas: (atualizarComplementos(v("lCompostas").value), v("lCompostas").value),
+    abrev: (atualizarAbreviacoes(v("lAbrev").value), v("lAbrev").value),
+    modeloPadrao: v("lModeloPadrao").value.trim(),
+    lTrocarTitulo: v("lTrocarTitulo").checked,
+  };
+}
+
+function listaParaRegex(texto) {
+  const termos = String(texto || "")
+    .split(",")
+    .map((t) => t.trim())
+    .filter(Boolean)
+    .map((t) => t.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"));
+  return termos.length ? new RegExp(termos.join("|"), "i") : null;
+}
+
+// ------------------------------------------------------------------
+// LULLI FEST: forminhas vendidas em unidades, separadas em caixas
+// ------------------------------------------------------------------
+// As forminhas (menos acetato) ficam em caixas de 40 un por cor. O título do
+// anúncio traz o total ("160 un") e a variação traz a cor ou as cores do kit
+// ("Preta/Dourada"). A conta é: total = un do título × qtd comprada; esse
+// total é dividido igualmente entre as cores; cada parte vira caixas.
+//
+// Cores são achadas por dicionário (e não cortando a variação em "/" ou ","),
+// porque no ML a variação junta vários atributos ("Preta, Nº 5") e um corte
+// cego transformaria o tamanho numa "cor". Nomes compostos vêm antes dos
+// simples pra "Azul Bebê" não virar só "Azul".
+const CORES_LULLI = [
+  ["ROSE GOLD", "ros[eé]\\s*gold"],
+  ["OFF WHITE", "off[\\s-]*white"],
+  ["AZUL TIFFANY", "azul\\s+tiffany"],
+  ["AZUL BEBÊ", "azul\\s+beb[eê]"],
+  ["AZUL CLARO", "azul\\s+claro"],
+  ["AZUL ESCURO", "azul\\s+escuro"],
+  ["AZUL ROYAL", "azul\\s+royal"],
+  ["AZUL MARINHO", "azul\\s+marinho"],
+  ["VERDE MENTA", "verde\\s+menta"],
+  ["VERDE ÁGUA", "verde\\s+[áa]gua"],
+  ["VERDE BANDEIRA", "verde\\s+bandeira"],
+  ["VERDE MILITAR", "verde\\s+militar"],
+  ["ROSA BEBÊ", "rosa\\s+beb[eê]"],
+  ["ROSA CLARO", "rosa\\s+claro"],
+  ["ROSA PINK", "rosa\\s+pink"],
+  ["PRETO", "pret[oa]"],
+  ["BRANCO", "branc[oa]"],
+  ["DOURADO", "dourad[oa]|ouro"],
+  ["PRATA", "prata|pratead[oa]"],
+  ["PINK", "pink"],
+  ["ROSA", "rosa"],
+  ["AZUL", "azul"],
+  ["VERMELHO", "vermelh[oa]"],
+  ["VERDE", "verde"],
+  ["LILÁS", "lil[áa]s"],
+  ["ROXO", "rox[oa]"],
+  ["AMARELO", "amarel[oa]"],
+  ["LARANJA", "lar[a]?nja|laranaja"],
+  ["MARROM", "marrom"],
+  ["CHOCOLATE", "chocolate"],
+  ["BEGE", "bege"],
+  ["NUDE", "nude"],
+  ["CHAMPAGNE", "champa(?:gne|nhe)"],
+  ["COBRE", "cobre"],
+  ["KRAFT", "kraft"],
+  ["TIFFANY", "tiffany"],
+  ["MARSALA", "marsala"],
+  ["BORDÔ", "bord[ôo]"],
+  ["VINHO", "vinho"],
+  ["CINZA", "cinza"],
+  ["GRAFITE", "grafite"],
+  ["SALMÃO", "salm[ãa]o"],
+  ["CORAL", "coral"],
+  ["PÉROLA", "p[ée]rola"],
+  ["MARFIM", "marfim"],
+  ["CREME", "creme"],
+  ["TRANSPARENTE", "transparente"],
+];
+// Cores conhecidas, usadas só como REDE DE SEGURANÇA. O caminho principal é
+// cortar a lista de cores pelos separadores ("/", "=", " - ", "+", ",", " e "),
+// porque a Lulli usa nomes de cor de catálogo ("Pistache Escuro", "Laranja
+// Kraft", "Off White") que nenhum dicionário vai cobrir inteiro. O dicionário
+// entra quando não há separador nenhum, pra achar a cor no meio do título.
+const CORES_LULLI_EXTRA = [
+  ["PISTACHE", "pistache"],
+  ["TERRACOTA", "terracota"],
+  ["OLIVA", "oliva"],
+  ["MOSTARDA", "mostarda|mostrada"],
+  ["MENTA", "menta"],
+  ["TURQUESA", "turquesa"],
+  ["FÚCSIA", "f[úu]csia"],
+  ["MAGENTA", "magenta"],
+  ["GOIABA", "goiaba"],
+  ["LAVANDA", "lavanda"],
+  ["AREIA", "areia"],
+  ["CARAMELO", "caramelo"],
+  ["CAFÉ", "caf[ée]"],
+  ["PÊSSEGO", "p[êe]s?sego"],
+  ["MUSGO", "musgo"],
+  ["AQUA", "aqua"],
+];
+const MODIFICADORES_COR =
+  "claro|clara|escuro|escura|beb[eê]|pastel|candy|metalizad[oa]|met[aá]lic[oa]|neon|fosc[oa]|perolad[oa]|kraft|cintilante|glitter|queimad[oa]|envelhecid[oa]";
+const TODAS_CORES = CORES_LULLI.concat(CORES_LULLI_EXTRA);
+const RE_CORES = new RegExp(
+  "(?<![A-Za-zÀ-ÿ])((?:" +
+    TODAS_CORES.map((c) => c[1]).join("|") +
+    ")(?:\\s+(?:" + MODIFICADORES_COR + "))?)(?![A-Za-zÀ-ÿ])",
+  "gi"
+);
+const RE_TEM_COR = new RegExp("(?<![A-Za-zÀ-ÿ])(?:" + TODAS_CORES.map((c) => c[1]).join("|") + ")(?![A-Za-zÀ-ÿ])", "i");
+
+function normalizarCor(s) {
+  return s
+    .replace(/\s+/g, " ")
+    .trim()
+    .toUpperCase()
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "")
+    .replace(/A$/, "O"); // PRETA = PRETO, DOURADA = DOURADO
+}
+
+function limparTexto(s) {
+  return String(s || "").replace(/\s+/g, " ").trim();
+}
+
+// Cortes que separam uma cor da outra. O hífen só conta com espaço dos dois
+// lados, pra "Off-White" continuar sendo uma cor só.
+// Qualquer hífen separa (inclusive grudado: "LaranjaKraft-Pêssego-Pistache").
+// Os pedaços que são só um complemento ("claro", "White" de "Off-White")
+// são colados de volta na cor anterior logo depois.
+const RE_SEPARADOR_COR = /\s*(?:\/|\+|=|;|\||,|-|–|\s+e\s+|\s+&\s+)\s*/i;
+// Segunda palavra de cor composta: "Azul-celeste", "Verde-água" não são duas
+// cores. A lista base fica aqui; o painel acrescenta mais (campo "Cores
+// compostas"), e lerConfig() remonta a regra a cada leitura.
+const COMPLEMENTOS_BASE = MODIFICADORES_COR + "|white|gold|black";
+let RE_SO_COMPLEMENTO = new RegExp("^(?:" + COMPLEMENTOS_BASE + ")$", "i");
+// Abreviações de cor usadas em SKU/variação ("PistacheCl", "OffW", "Pc").
+// Compara o pedaço inteiro, sem espaço e sem diferença de maiúscula, então
+// "Pc" só vira Pistache Claro quando é um pedaço sozinho ("OffW/Pc/Pe/Vm").
+let ABREVIACOES = new Map();
+function atualizarAbreviacoes(texto) {
+  const m = new Map();
+  for (const par of String(texto || "").split(",")) {
+    const [de, para] = par.split("=").map((x) => (x || "").trim());
+    if (de && para) m.set(de.replace(/\s+/g, "").toLowerCase(), para);
+  }
+  ABREVIACOES = m;
+}
+// Erros de digitação comuns nos anúncios: corrige pro nome certo da cor.
+const ERROS_DIGITACAO = [
+  [/(?<![A-Za-zÀ-ÿ])larnja|laranaja/gi, "Laranja"],
+  [/(?<![A-Za-zÀ-ÿ])mostrada(?![A-Za-zÀ-ÿ])/gi, "Mostarda"],
+  [/(?<![A-Za-zÀ-ÿ])pesego(?![A-Za-zÀ-ÿ])/gi, "Pessego"],
+];
+function corrigirDigitacao(t) {
+  let r = String(t || "");
+  for (const [re, certo] of ERROS_DIGITACAO) r = r.replace(re, certo);
+  return r;
+}
+
+// Expande abreviação e separa cor grudada no complemento ("azulcandy").
+function expandirPedaco(t) {
+  t = corrigirDigitacao(t);
+  const chave = String(t || "").replace(/\s+/g, "").toLowerCase();
+  if (ABREVIACOES.has(chave)) return ABREVIACOES.get(chave);
+  return String(t || "")
+    .split(/\s+/)
+    .map((w) => {
+      const g = typeof RE_COR_GRUDADA !== "undefined" && w.match(RE_COR_GRUDADA);
+      return g ? g[1] + " " + g[2] : w;
+    })
+    .join(" ");
+}
+
+function atualizarComplementos(texto) {
+  const extras = String(texto || "")
+    .split(",")
+    .map((t) => t.trim())
+    .filter(Boolean)
+    .map((t) =>
+      t
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
+        // aceita com e sem acento: "agua" casa "água"
+        .replace(/a/gi, "[aáàâã]").replace(/e/gi, "[eéê]").replace(/i/gi, "[ií]").replace(/o/gi, "[oóôõ]").replace(/u/gi, "[uú]").replace(/c/gi, "[cç]")
+    );
+  RE_SO_COMPLEMENTO = new RegExp("^(?:" + [COMPLEMENTOS_BASE].concat(extras).join("|") + ")$", "i");
+}
+
+// Pedaços que não são cor: tamanho, número, unidade, rótulo solto.
+function pedacoNaoECor(t) {
+  return (
+    !t ||
+    /^n\s*[º°o.]?\s*\d/i.test(t) ||
+    /^\d+([.,]\d+)?\s*(un|unid|unidades|cm|mm|pçs|peças)?\.?$/i.test(t) ||
+    /\b(tamanho|modelo|formato|unidades?|quantidade)\b/i.test(t) ||
+    /^(kit|cores?|sortid[ao]s?|variad[ao]s?)$/i.test(t) ||
+    // "80 UNIDADES", "Kit 120 un", "2 Caixas": quantidade, não cor
+    ((RE_UNIDADES.test(t) || /\d+\s*(?:cx|caixas?)(?![A-Za-zÀ-ÿ])/i.test(t)) && !RE_TEM_COR.test(t))
+  );
+}
+
+function cortarCores(texto) {
+  const brutos = String(texto)
+    // "LaranjaKraft" → "Laranja Kraft", "PistacheEscuro" → "Pistache Escuro"
+    .replace(/([a-zà-ÿ])([A-ZÀ-Ý])/g, "$1 $2")
+    .split(RE_SEPARADOR_COR);
+  const colados = [];
+  for (const b of brutos) {
+    const t = limparTexto(expandirPedaco(limparTexto(b)));
+    if (colados.length && RE_SO_COMPLEMENTO.test(t)) colados[colados.length - 1] += " " + t;
+    else colados.push(t);
+  }
+  const pedacos = colados
+    .map((t) =>
+      limparTexto(t)
+        .replace(/^(?:kit\s+)?(?:\d+\s+)?cor(?:es)?\s*:?\s*/i, "")
+        .replace(/^[:\-–.\s]+|[:\-–.\s]+$/g, "")
+    )
+    .filter((t) => !pedacoNaoECor(t))
+    // Pedaço com várias cores sem separador entre elas ("Branco Pistache
+    // Claro Pistache Escuro"): quebra pelas cores conhecidas que tem dentro.
+    .flatMap((t) => {
+      const dic = coresPorDicionario(t);
+      return dic.length > 1 ? dic.map((c) => c.nome) : [t];
+    });
+  const saida = [];
+  const vistos = new Set();
+  for (const p of pedacos) {
+    const canon = normalizarCor(p);
+    if (vistos.has(canon)) continue;
+    vistos.add(canon);
+    saida.push({ canon, nome: p.toUpperCase() });
+  }
+  return saida;
+}
+
+function coresPorDicionario(texto) {
+  const t = corrigirDigitacao(texto);
+  // Junta "Verde" + "Musgo" (e afins) quando a 2ª palavra vem colada na 1ª e
+  // é um complemento de cor (lista "Cores compostas"). Sem isso, "Verde
+  // Musgo" no título contava como duas cores.
+  const achados = [];
+  for (const m of t.matchAll(RE_CORES)) {
+    const ini = m.index;
+    const fim = m.index + m[0].length;
+    const ant = achados[achados.length - 1];
+    if (ant && /^[\s-]*$/.test(t.slice(ant.fim, ini)) && RE_SO_COMPLEMENTO.test(limparTexto(m[1]))) {
+      ant.nome += " " + limparTexto(m[1]);
+      ant.fim = fim;
+      continue;
+    }
+    achados.push({ nome: limparTexto(m[1]), fim });
+  }
+  const saida = [];
+  const vistos = new Set();
+  for (const a of achados) {
+    const canon = normalizarCor(a.nome);
+    if (vistos.has(canon)) continue;
+    vistos.add(canon);
+    saida.push({ canon, nome: a.nome.toUpperCase() });
+  }
+  return saida;
+}
+
+// Onde começa a lista de cores dentro do título: logo depois de "cores" /
+// "cor" / "cores:" — mas não do "3 cores" de "Kit 3 cores", que é contagem.
+const RE_INICIO_CORES_TITULO = /(?<!\d\s*)\bcor(?:es)?\b\s*:?/i;
+
+// Acha as cores do produto, na ordem de confiança:
+//   1) variação do anúncio, cortada nos separadores
+//   2) trecho do título depois da palavra "cores"
+//   3) dicionário de cores aplicado ao título inteiro
+function acharCoresLulli(p) {
+  if (p.variacao) {
+    let daVar = cortarCores(p.variacao);
+    // Variação que é só código ("BE- OU24"): nenhuma cor conhecida e todos os
+    // pedaços com número ou de 1–3 letras. Ignora e segue pro título/SKU.
+    if (daVar.length && !daVar.some((c) => RE_TEM_COR.test(c.nome)) && daVar.every((c) => /\d/.test(c.nome) || c.nome.replace(/\s/g, "").length <= 3)) daVar = [];
+    // Uma variação de um pedaço só precisa ter cara de cor (ou ser a única
+    // coisa que tem); "Nº 5" já caiu no filtro acima.
+    if (daVar.length) return { cores: daVar, origem: "variação" };
+  }
+  const titulo = String(p.title || "");
+  const m = titulo.match(RE_INICIO_CORES_TITULO);
+  if (m) {
+    const trecho = titulo.slice(m.index + m[0].length);
+    const doTitulo = cortarCores(trecho);
+    if (doTitulo.length > 1 || (doTitulo.length === 1 && RE_TEM_COR.test(doTitulo[0].nome))) {
+      return { cores: doTitulo, origem: "título (depois de “cores”)" };
+    }
+  }
+  // SKU antes do "chute" no título: os SKUs novos trazem as cores
+  // ("Panton-120un-PistacheEscuro-PistacheClaro-OffWhite").
+  // Sem variação e sem "cores" no título: compara o que dá pra achar no
+  // título com o que o SKU diz e fica com o mais completo (o SKU às vezes é
+  // abreviado, tipo "OFF-PC-PE-120", e aí o título ganha).
+  const dic = coresPorDicionario(titulo);
+  const doSku = coresDoSku(p.sku);
+  if (doSku.length > dic.length) return { cores: doSku, origem: "SKU" };
+  return { cores: dic, origem: dic.length ? "título (cores conhecidas)" : "—" };
+}
+
+// Palavras que podem compor o nome de uma cor no SKU, além das cores em si.
+// Cor grudada no complemento, comum em SKU: "Offwhite", "Laranjakraft".
+const RE_COR_GRUDADA = new RegExp(
+  "^(" + TODAS_CORES.map((c) => c[1]).join("|") + "|off)(" + MODIFICADORES_COR + "|white|candy|musgo|royal|marinho)$",
+  "i"
+);
+const RE_PALAVRA_DE_COR_EXTRA = /^(off|candy|musgo|quente|royal|marinho|bebe|bebê|pink|gold|white)$/i;
+
+// Lê as cores de um SKU. Só aceita pedaços que são INTEIRAMENTE nome de cor
+// ("Pistache Escuro", "Off White", "Laranja Kraft"); de um pedaço misturado
+// ("BordaBaliOuro") pega só a cor conhecida que estiver dentro. Modelo,
+// quantidade ("120un", "Kit120") e códigos (MLB…) são ignorados.
+function coresDoSku(sku) {
+  if (!sku) return [];
+  const brutos = String(sku)
+    .replace(/([a-zà-ÿ])([A-ZÀ-Ý])/g, "$1 $2")
+    .replace(/([A-Za-zÀ-ÿ])(\d)|(\d)([A-Za-zÀ-ÿ])/g, (m, a, b, c, d) => (a ? a + " " + b : c + " " + d))
+    .split(/[-_\/+,|;]+/)
+    .map((t) => limparTexto(expandirPedaco(limparTexto(t))))
+    .filter(Boolean);
+  const colados = [];
+  for (const t of brutos) {
+    if (colados.length && RE_SO_COMPLEMENTO.test(t)) colados[colados.length - 1] += " " + t;
+    else colados.push(t);
+  }
+  const saida = [];
+  const vistos = new Set();
+  const add = (nome) => {
+    const canon = normalizarCor(nome);
+    if (!vistos.has(canon)) { vistos.add(canon); saida.push({ canon, nome: nome.toUpperCase() }); }
+  };
+  for (const pedaco of colados) {
+    const palavras = pedaco
+      .split(/\s+/)
+      .filter((w) => !/^\d+$/.test(w))
+      .flatMap((w) => {
+        const g = w.match(RE_COR_GRUDADA);
+        return g ? [g[1], g[2]] : [w];
+      });
+    if (!palavras.length) continue;
+    const soCor = palavras.every((w) => RE_TEM_COR.test(w) || RE_SO_COMPLEMENTO.test(w) || RE_PALAVRA_DE_COR_EXTRA.test(w));
+    const temCor = palavras.some((w) => RE_TEM_COR.test(w)) || /off\s+white/i.test(palavras.join(" "));
+    if (soCor && temCor) add(palavras.join(" "));
+    else for (const c of coresPorDicionario(pedaco)) add(c.nome);
+  }
+  return saida;
+}
+
+// ------------------------------------------------------------------
+// Modelo da forminha
+// ------------------------------------------------------------------
+// Primeiro procura um modelo da lista que o usuário mantém no painel (é o
+// jeito certeiro). Se nenhum bater, limpa o título: corta a parte das cores,
+// tira quantidade, "forminha", "para doces finos" e afins, e o que sobra é o
+// modelo. Ex.: "120 forminha p doces finos Panton - cores ..." → PANTON.
+const PALAVRAS_VAZIAS = new Set(
+  (
+    "p p/ pra para de do da dos das em com c c/ e o a os as no na nos nas " +
+    "forminha forminhas forma formas doce doces docinho docinhos fino finos fina finas " +
+    "brigadeiro brigadeiros bombom bombons trufa trufas papel papeis " +
+    "festa festas casamento aniversario aniversário decoracao decoração confeitaria " +
+    "kit kits un unid unidade unidades pcs pçs peca peças peça cor cores sortida sortidas sortido sortidos " +
+    "caixa caixas pacote pacotes embalagem lulli fest lullifest novo nova"
+  ).split(/\s+/)
+);
+
+// Cada item da lista é "como aparece no título" ou "como aparece=nome que
+// sai na etiqueta" (ex.: "Bali sem borda=Bali"). Os mais longos são testados
+// primeiro, pra "Borda Bali" e "Bali sem borda" não caírem em "Bali".
+function modelosConhecidos(cfg) {
+  return String(cfg.modelos || "")
+    .split(",")
+    .map((t) => t.trim())
+    .filter(Boolean)
+    .map((t) => {
+      const [busca, nome] = t.split("=").map((x) => x.trim());
+      return { busca, nome: nome || busca };
+    })
+    .filter((m) => m.busca)
+    .sort((a, b) => b.busca.length - a.busca.length);
+}
+
+// Procura só os modelos da lista (sem padrão, sem dedução) num texto
+// qualquer — variação, SKU. Hífen e "_" contam como separador, então
+// "BeRosa-pompom-25" acha POMPOM.
+function acharModeloNaLista(texto, cfg) {
+  const t = String(texto || "");
+  if (!t) return null;
+  for (const mod of modelosConhecidos(cfg)) {
+    const re = new RegExp("(?<![A-Za-zÀ-ÿ0-9])" + mod.busca.replace(/[.*+?^${}()|[\]\\]/g, "\\$&").replace(/\s+/g, "[\\s_-]*") + "(?![A-Za-zÀ-ÿ])", "i");
+    if (re.test(t)) return mod.nome.toUpperCase();
+  }
+  return null;
+}
+
+function acharModelo(titulo, cfg) {
+  const t = String(titulo || "");
+  for (const mod of modelosConhecidos(cfg)) {
+    const re = new RegExp("(?<![A-Za-zÀ-ÿ0-9])" + mod.busca.replace(/[.*+?^${}()|[\]\\]/g, "\\$&").replace(/\s+/g, "\\s+") + "(?![A-Za-zÀ-ÿ0-9])", "i");
+    if (re.test(t)) return { modelo: mod.nome.toUpperCase(), conhecido: true };
+  }
+  // Nenhum modelo no título: na Lulli são os anúncios antigos da Bali
+  // ("120 Forminhas Doces Luxo Flor..."), então vale o modelo padrão.
+  if (cfg.modeloPadrao) return { modelo: cfg.modeloPadrao.toUpperCase(), conhecido: false, padrao: true };
+
+  let base = t;
+  const mc = base.match(RE_INICIO_CORES_TITULO);
+  if (mc) base = base.slice(0, mc.index);
+  base = base.split(/\s[-–=|]\s/)[0]; // o que vem depois de " - " costuma ser cor/descrição
+  base = base
+    .replace(RE_UNIDADES_G, " ")
+    .replace(/\b\d+\s*cores?\b/gi, " ")
+    .replace(RE_CORES, " ");
+
+  const palavras = [];
+  for (const bruto of base.split(/[\s,;:()\[\]/+]+/)) {
+    const w = bruto.replace(/^[.\-–]+|[.\-–]+$/g, "");
+    if (!w) continue;
+    const low = w.toLowerCase();
+    if (PALAVRAS_VAZIAS.has(low) || PALAVRAS_VAZIAS.has(low.replace(/\.$/, ""))) continue;
+    if (/^\d+$/.test(w)) {
+      // Número só fica se vier logo depois de "Nº" (é o tamanho da forminha).
+      const ant = palavras[palavras.length - 1];
+      if (ant && /^n\s*[º°o.]?$/i.test(ant)) palavras[palavras.length - 1] = ant + " " + w;
+      continue;
+    }
+    palavras.push(w);
+  }
+  // Mantém "Nº 5" grudado: o número do tamanho faz parte do modelo.
+  const modelo = palavras.join(" ").replace(/\b(n\s*[º°o.]?)\s+(\d+)/i, "$1$2").toUpperCase().trim();
+  return { modelo: modelo.split(" ").slice(0, 4).join(" "), conhecido: false };
+}
+
+// "160 un", "160un", "160 unid.", "160 unidades", "160 pçs", "160 peças" —
+// e também "120 forminhas", que é como muitos títulos começam.
+const RE_UNIDADES_SRC = "(\\d{1,5})\\s*(?:un(?:i|id|ids|idade|idades)?\\.?|u\\.|p[çc]s|pe[çc]as|forminhas?)(?![A-Za-zÀ-ÿ])";
+const RE_UNIDADES = new RegExp(RE_UNIDADES_SRC, "i");
+const RE_UNIDADES_G = new RegExp(RE_UNIDADES_SRC, "gi");
+// "Kit 4 cores", "4 cores"
+const RE_N_CORES = /(\d{1,2})\s*cores/i;
+
+// "Borda Bali" e "Bali Borda" são o mesmo modelo; na etiqueta sai BALI BORDA.
+function normalizarModelo(m) {
+  const t = limparTexto(m).toUpperCase();
+  if (/^(BORDA BALI|BALI BORDA|BORDA)$/.test(t)) return "BALI BORDA";
+  return t;
+}
+
+// Aceita palavras grudadas, como no SKU "AMARELOCANDY-BORDABALIOURO120UNI".
+// "Bali Ouro" / "BaliOuro" (Shopee) também é a Bali com borda.
+const RE_BORDA = /borda\s*bali|bali\s*borda|borda\s*(?:ouro|dourad|prata|pratead)|bali\s*(?:ouro|dourad|prata|pratead)/i;
+const RE_PALAVRA_ACABAMENTO = /(?<![A-Za-zÀ-ÿ])(?:ouro|dourad[oa]|prata|pratead[oa])(?![A-Za-zÀ-ÿ])/gi;
+
+// Cor da borda: primeiro onde vem colada em "borda" (título, variação, SKU),
+// depois qualquer ouro/prata solto no título ou na variação.
+function acharAcabamentoBorda(titulo, variacao, sku) {
+  const mapear = (w) => (/^(ouro|dourad)/i.test(w) ? "OURO" : "PRATA");
+  const reColado = /(?:borda\s*(?:bali\s*)?|bali\s*)(ouro|dourad[oa]?|prata|pratead[oa]?)/i;
+  for (const fonte of [titulo, variacao, sku]) {
+    const m = String(fonte || "").match(reColado);
+    if (m) return mapear(m[1]);
+  }
+  const reSolto = /(?<![A-Za-zÀ-ÿ])(ouro|dourad[oa]|prata|pratead[oa])(?![A-Za-zÀ-ÿ])/i;
+  for (const fonte of [variacao, titulo]) {
+    const m = String(fonte || "").match(reSolto);
+    if (m) return mapear(m[1]);
+  }
+  // SKU grudado sem "borda" do lado (ex.: "...BALIOURO...")
+  const mSku = String(sku || "").match(/(ouro|prata)/i);
+  return mSku ? mapear(mSku[1]) : null;
+}
+
+// Calcula as caixas de UM produto. Devolve null quando o produto não é uma
+// forminha a converter (aí a etiqueta sai do jeito de sempre).
+function caixasLulli(p, cfg) {
+  if (!cfg.lulli || !p || !p.title) return null;
+  const titulo = p.title;
+  if (cfg.excluir && cfg.excluir.test(titulo)) return null;
+  if (cfg.incluir && !cfg.incluir.test(titulo)) return null;
+
+  // Variação primeiro: quando o anúncio vende vários tamanhos ("c/ 40 - 120
+  // unid." no título), a variação ("80 UNIDADES") é o que o comprador levou.
+  // Na Shopee a variação pode ter dois níveis ("Branco, 80 UNIDADES") ou
+  // vir em caixas ("2 Caixas"); caixas viram unidades depois de saber o
+  // tamanho da caixa do modelo.
+  const varTxt = String(p.variacao || "");
+  // "Off white/pistache /pistache e,120": a 2ª variação da Shopee
+  // ("Unidades por pacote") vem só com o número, sem "un".
+  const mUnVar =
+    varTxt.match(RE_UNIDADES) ||
+    varTxt.match(/(?:^|[,;|])\s*(\d{2,4})\s*(?=$|[,;|])/);
+  // Título que oferece várias quantidades ("Kit 120 , 240 ou 360") só serve
+  // se a variação não disser qual foi comprada — aí sai CONFERIR.
+  const tituloVariasQtd = /\d{2,4}\s*(?:,|ou|-|\/|e)\s*\d{2,4}/i.test(titulo);
+  const mCxVar = varTxt.match(/(\d{1,3})\s*(?:cx|caixas?)(?![A-Za-zÀ-ÿ])/i);
+  const mUnOutro = titulo.match(RE_UNIDADES) || String(p.sku || "").match(RE_UNIDADES);
+  if (!mUnVar && !mCxVar && !mUnOutro) return null;
+  const qtd = parseInt(String(p.qtd || p.quantidade || "1").replace(/\D/g, ""), 10) || 1;
+
+  // Modelo: título primeiro; se o título não traz nenhum da lista, tenta a
+  // variação/característica e o SKU antes de cair no modelo padrão.
+  let achado = acharModelo(titulo, cfg);
+  if (!achado.conhecido) {
+    for (const fonte of [p.variacao, p.sku, p.skuPai]) {
+      const m = acharModeloNaLista(fonte, cfg);
+      if (m) { achado = { modelo: m, conhecido: true }; break; }
+    }
+  }
+  let { modelo } = achado;
+  modelo = normalizarModelo(modelo);
+
+  // BALI BORDA: o título, o SKU ou a variação pode dizer que é com borda
+  // ("Borda Bali", "Bali Borda", "Borda Ouro", "BORDABALIOURO" no SKU).
+  // "Bali sem borda" NÃO é borda.
+  const tudo = [titulo, p.variacao || "", p.sku || "", p.skuPai || ""].join(" ");
+  const semBorda = /sem\s*borda/i.test(tudo);
+  // Só vira BALI BORDA se o modelo é da família Bali (ou não foi achado
+  // nenhum da lista). "Flor Beauty Borda Ouro" é BEAUTY — a Beauty também
+  // tem borda dourada, e a palavra "borda" não pode passar por cima do modelo.
+  const familiaBali = !achado.conhecido || modelo === "BALI" || modelo === "BALI BORDA";
+  if (!semBorda && familiaBali && (modelo === "BALI BORDA" || RE_BORDA.test(tudo))) modelo = "BALI BORDA";
+  const acabamento = modelo === "BALI BORDA" ? acharAcabamentoBorda(titulo, p.variacao, p.sku) : null;
+
+  const cabeca = modelo || "";
+  // Caixa específica do modelo ("Beauty=24"), senão a padrão.
+  for (const par of String(cfg.caixaModelo || "").split(",")) {
+    const [nome, n] = par.split("=").map((x) => (x || "").trim());
+    if (nome && parseInt(n, 10) > 0 && modelo && modelo === normalizarModelo(nome.toUpperCase())) {
+      cfg = Object.assign({}, cfg, { caixa: parseInt(n, 10) });
+    }
+  }
+
+  const unAnuncio = mUnVar
+    ? parseInt(mUnVar[1], 10)
+    : mCxVar
+    ? parseInt(mCxVar[1], 10) * cfg.caixa
+    : parseInt(mUnOutro[1], 10);
+  const total = unAnuncio * qtd;
+
+  let { cores, origem } = acharCoresLulli(p);
+
+  // Cor dupla (Pompom): "Branco e Rosa" é UMA forminha branca com rosa, não
+  // meio kit de cada. A variação inteira vira uma cor só; "Marfim e Marfim"
+  // fica só MARFIM.
+  const modelosDupla = String(cfg.corDupla || "").split(",").map((m) => normalizarModelo(m)).filter(Boolean);
+  if (modelo && modelosDupla.includes(modelo)) {
+    // Beauty também: "Vermelho Ouro", "Branco Prata", "Pérola Rose Gold" é a
+    // cor da flor + a cor da borda, numa forminha só. Variação sem nenhuma
+    // cor ("BE- OU24", código) é ignorada e vale o que veio do título.
+    const fonte = limparTexto(p.variacao || "");
+    const partes = fonte ? cortarCores(fonte).map((c) => c.nome) : [];
+    const temCorNaVar = partes.some((n) => RE_TEM_COR.test(n));
+    if (fonte && temCorNaVar) {
+      const unicas = [...new Set(partes.map((n) => normalizarCor(n)))];
+      const nome =
+        unicas.length === 1
+          ? partes[0]
+          : /[\/,+;|]|\s-\s|\se\s/i.test(fonte)
+          ? partes.join(" E ")
+          : fonte.toUpperCase();
+      cores = [{ canon: normalizarCor(nome), nome }];
+      origem = "variação (cor dupla)";
+    } else if (cores.length > 1) {
+      const nome = cores.map((c) => c.nome).join(" E ");
+      cores = [{ canon: normalizarCor(nome), nome }];
+      origem += " (cor dupla)";
+    }
+  }
+
+  // Anúncios antigos com o nome de cor errado: "Verde Claro" é a Pistache
+  // Claro, "Verde Escuro" é a Pistache Escuro (Bali / Bali Borda / Panton).
+  // A troca é pelo nome inteiro da cor, então "Verde Musgo" e "Verde Quente"
+  // nunca são tocados.
+  const modelosTroca = String(cfg.trocaCorModelos || "")
+    .split(",")
+    .map((m) => normalizarModelo(m))
+    .filter(Boolean);
+  // Regra com modelo na frente ("Panton: Laranja=Laranja Kraft") vale só
+  // naquele modelo; regra sem modelo vale nos modelos do campo ao lado.
+  const modeloNaLista = !modelosTroca.length || modelosTroca.includes(modelo);
+  if (cfg.trocaCor) {
+    const trocas = new Map();
+    for (const par of String(cfg.trocaCor).split(",")) {
+      let regra = par;
+      let soModelo = null;
+      const mm = regra.match(/^\s*([^:=]+):(.*)$/);
+      if (mm) { soModelo = normalizarModelo(mm[1]); regra = mm[2]; }
+      if (soModelo ? soModelo !== modelo : !modeloNaLista) continue;
+      const [de, para] = regra.split("=").map((x) => limparTexto(x || ""));
+      if (de && para) trocas.set(normalizarCor(de), para.toUpperCase());
+    }
+    cores = cores.map((c) => {
+      const novo = trocas.get(normalizarCor(c.nome));
+      return novo ? { canon: normalizarCor(novo), nome: novo } : c;
+    });
+  }
+
+  // Limpa das cores o que é nome de modelo ou código: na Shopee a variação
+  // vem no formato do SKU ("BaliOuro-KIT80UNI-PistacheEscuro-PistacheClaro"),
+  // e "Bali Ouro" / "KIT80UNI" não podem virar cor.
+  {
+    const palavrasModelo = new Set(
+      modelosConhecidos(cfg)
+        .flatMap((m) => (m.busca + " " + m.nome).split(/\s+/))
+        .map((w) => w.toUpperCase())
+        .concat(["KIT", "KITS", "UNI", "UN", "UNID", "FORMINHA", "FORMINHAS", "LULLI", "LULLIFEST"])
+    );
+    const limpas = cores
+      .map((c) => {
+        const nome = c.nome
+          .split(/\s+/)
+          .filter((w) => !palavrasModelo.has(w.toUpperCase()) && !/\d/.test(w))
+          .join(" ");
+        return nome ? { canon: normalizarCor(nome), nome } : null;
+      })
+      .filter(Boolean);
+    const vistos = new Set();
+    const unicas = limpas.filter((c) => (vistos.has(c.canon) ? false : vistos.add(c.canon)));
+    if (unicas.length) cores = unicas;
+  }
+
+  if (modelo === "BALI BORDA") {
+    // Na Bali Borda, ouro/prata é a cor da BORDA: sai da lista de cores da
+    // forminha (de qualquer origem, até da variação "Vermelho, Ouro") e vai
+    // colado em cada cor: "VERMELHO OURO", "BRANCO PRATA".
+    cores = cores
+      .map((c) => {
+        const base = limparTexto(c.nome.replace(RE_PALAVRA_ACABAMENTO, " "));
+        return base ? { canon: normalizarCor(base), nome: base.toUpperCase() } : null;
+      })
+      .filter(Boolean);
+    const vistos = new Set();
+    cores = cores.filter((c) => (vistos.has(c.canon) ? false : vistos.add(c.canon)));
+    if (acabamento) {
+      cores = cores.map((c) => ({ canon: c.canon + " " + acabamento, nome: c.nome + " " + acabamento }));
+    }
+  } else if (!/^variação/.test(origem) && modelo) {
+    // Outros modelos (ex.: "Flor Beauty Ouro"): palavra cadastrada como
+    // acabamento não conta como cor quando a cor vem do título.
+    const ignorar = new Set(
+      String(cfg.naoCor || "")
+        .split(",")
+        .map((par) => par.split("=").map((x) => (x || "").trim()))
+        .filter(([m, c]) => m && c && normalizarModelo(m.toUpperCase()) === modelo)
+        .map(([, c]) => normalizarCor(c))
+    );
+    const filtradas = cores.filter((c) => !ignorar.has(c.canon));
+    if (filtradas.length && filtradas.length < cores.length) {
+      cores = filtradas;
+      origem += " — sem o acabamento";
+    }
+  }
+  const avisos = [];
+  if (!mUnVar && !mCxVar && tituloVariasQtd) avisos.push("título tem várias quantidades e a variação não diz qual");
+  const mN = titulo.match(RE_N_CORES);
+  const nTitulo = mN ? parseInt(mN[1], 10) : null;
+  if (nTitulo && cores.length && nTitulo !== cores.length) {
+    avisos.push(`título fala em ${nTitulo} cores, achei ${cores.length}`);
+  }
+
+  if (cores.length === 0) {
+    const n = nTitulo || 1;
+    const porCor = total / n;
+    const texto =
+      (cabeca ? `${cabeca}: ` : "") +
+      (n > 1 ? `${n} CORES, ` : "") +
+      descreverCaixas(porCor, cfg.caixa, n > 1 ? "DE CADA" : "") +
+      `  (${total} un) — CONFERIR COR` + (!mUnVar && !mCxVar && tituloVariasQtd ? " E QUANTIDADE" : "");
+    return {
+      texto,
+      cabeca,
+      itens: [{ cor: "COR NÃO IDENTIFICADA", caixas: Math.floor(porCor / cfg.caixa) * n, resto: (porCor % cfg.caixa) * n }],
+      total,
+      conferir: true,
+      avisos: ["cor não encontrada"],
+      origemCor: origem,
+    };
+  }
+
+  const porCor = total / cores.length;
+  const itens = cores.map((c) => ({
+    cor: c.nome,
+    canon: c.canon,
+    caixas: Math.floor(porCor / cfg.caixa),
+    resto: porCor - Math.floor(porCor / cfg.caixa) * cfg.caixa,
+  }));
+  const quebrado = itens.some((i) => i.resto !== 0);
+  if (quebrado) avisos.push(`${Math.round(porCor * 10) / 10} un por cor não fecha em caixas de ${cfg.caixa}`);
+
+  const sep = quebrado ? "  ·  " : " + ";
+  let texto = (cabeca ? `${cabeca}: ` : "") + itens.map((i) => descreverCaixas(porCor, cfg.caixa, i.cor)).join(sep);
+  const porCorTxt = Math.round(porCor * 10) / 10;
+  if (cfg.lMostrarUn) {
+    texto += cores.length > 1 ? `  (${total} un · ${porCorTxt} por cor)` : `  (${total} un)`;
+  }
+  const conferir = quebrado || avisos.length > 0;
+  if (conferir) texto += "  — CONFERIR";
+  return { texto, cabeca, itens, total, conferir, avisos, origemCor: origem };
+}
+
+function descreverCaixas(unidades, porCaixa, cor) {
+  const cx = Math.floor(unidades / porCaixa);
+  const resto = Math.round((unidades - cx * porCaixa) * 10) / 10;
+  const partes = [];
+  if (cx > 0) partes.push(`${cx} CX`);
+  if (resto > 0) partes.push(`${resto} UN`);
+  if (!partes.length) partes.push("0 CX");
+  return partes.join(" + ") + (cor ? " " + cor : "");
+}
+
+// Monta a linha de UM produto respeitando o que foi marcado. Aceita tanto o
+// formato do Mercado Livre (quantidade) quanto o da Shopee (qtd).
+function montarLinhaProduto(p, cfg) {
+  const partes = [];
+  // Lulli: as caixas vêm PRIMEIRO na linha — é o que a expedição lê de relance.
+  // Quando há caixas, a variação e a "Qtd" saem, porque as cores e a conta já
+  // estão no texto das caixas (repetir só gastaria espaço na etiqueta).
+  const cx = caixasLulli(p, cfg);
+  if (cx) partes.push(cx.texto);
+  if (cfg.nome && p.title && !(cx && cfg.lTrocarTitulo)) partes.push(p.title);
+  if (cfg.sku && p.sku) partes.push("SKU: " + p.sku);
+  if (cfg.skuPai && p.skuPai && p.skuPai !== p.sku) partes.push("Ref: " + p.skuPai);
+  if (!cx && cfg.variacao && p.variacao) partes.push(p.variacao);
+  const quantidade = p.qtd || p.quantidade;
+  if (!cx && cfg.qtd && quantidade) partes.push("Qtd: " + quantidade);
+  return partes.join("  —  ");
+}
+
+function montarParagrafos(produtos, cfg, extras) {
+  const linhas = (produtos || []).map((p) => montarLinhaProduto(p, cfg)).filter(Boolean);
+  if (cfg.obs && extras && extras.obs) linhas.push("Obs. do cliente: " + extras.obs);
+  if (cfg.mensagem) linhas.push(cfg.mensagem);
+  return linhas;
+}
+
+function chaveOrdenacao(produtos, campo) {
+  const p = (produtos && produtos[0]) || {};
+  if (campo === "sku") return String(p.sku || "");
+  if (campo === "variacao") return String(p.variacao || "");
+  if (campo === "produto") return String(p.title || "");
+  if (campo === "qtd") return String(p.qtd || p.quantidade || "").padStart(6, "0");
+  return "";
+}
+
+// Guarda as preferências entre uma sessão e outra. Roda dentro de try/catch
+// porque alguns navegadores bloqueiam armazenamento em arquivo local — se
+// bloquear, a ferramenta só perde a memória das opções e segue funcionando.
+function salvarPreferencias() {
+  try {
+    const dados = {};
+    for (const id of CAMPOS_CHECK) dados[id] = document.getElementById(id).checked;
+    for (const id of CAMPOS_TEXTO) dados[id] = document.getElementById(id).value;
+    window.localStorage.setItem("etiquetas-lulli-prefs", JSON.stringify(dados));
+  } catch (e) {
+    /* sem persistência, tudo bem */
+  }
+}
+
+function carregarPreferencias() {
+  try {
+    const bruto = window.localStorage.getItem("etiquetas-lulli-prefs");
+    if (!bruto) return;
+    const dados = JSON.parse(bruto);
+    for (const id of CAMPOS_CHECK) {
+      if (typeof dados[id] === "boolean") document.getElementById(id).checked = dados[id];
+    }
+    // A primeira versão salvava só "Panton, Bali"; não deixa isso apagar a
+    // lista completa de modelos que veio depois.
+    if (dados.lModelos === "Panton, Bali") delete dados.lModelos;
+    // Caixa da Beauty (24 un) entrou depois: não deixa o campo vazio salvo
+    // de uma versão anterior apagar esse padrão.
+    if (typeof dados.lCaixaModelo === "string" && !/beauty\s*=/i.test(dados.lCaixaModelo)) {
+      dados.lCaixaModelo = ["Beauty=24", dados.lCaixaModelo.trim()].filter(Boolean).join(", ");
+    }
+    if (typeof dados.lTrocaCor === "string" && !/laranja\s*=\s*laranja\s*kraft/i.test(dados.lTrocaCor)) {
+      dados.lTrocaCor = [dados.lTrocaCor.trim(), "Panton: Laranja=Laranja Kraft"].filter(Boolean).join(", ");
+    }
+    if (typeof dados.lCorDupla === "string" && !/beauty/i.test(dados.lCorDupla)) {
+      dados.lCorDupla = [dados.lCorDupla.trim(), "Beauty"].filter(Boolean).join(", ");
+    }
+    if (typeof dados.lTrocaCor === "string" && !/panton\s*:\s*pistache\s*=/i.test(dados.lTrocaCor)) {
+      dados.lTrocaCor = [dados.lTrocaCor.trim(), "Panton: Pistache=Pistache Claro"].filter(Boolean).join(", ");
+    }
+    if (typeof dados.lCaixaModelo === "string" && !/pompom\s*=/i.test(dados.lCaixaModelo)) {
+      dados.lCaixaModelo = [dados.lCaixaModelo.trim(), "Pompom=25"].filter(Boolean).join(", ");
+    }
+    // Versão anterior não tinha o apelido "Borda" (anúncios que escrevem só
+    // "Borda" no título, sem "Bali"): acrescenta sem apagar o resto da lista.
+    if (typeof dados.lModelos === "string" && !/(^|,)\s*borda\s*=/i.test(dados.lModelos)) {
+      dados.lModelos = dados.lModelos.replace(/(Bali sem borda=Bali\s*,?)/i, "$1 Borda=Borda Bali,");
+      if (!/borda\s*=/i.test(dados.lModelos)) dados.lModelos += ", Borda=Borda Bali";
+    }
+    for (const id of CAMPOS_TEXTO) {
+      if (typeof dados[id] === "string") document.getElementById(id).value = dados[id];
+    }
+  } catch (e) {
+    /* preferências corrompidas ou bloqueadas: usa os padrões */
+  }
+}
+
+for (const id of CAMPOS_CHECK.concat(CAMPOS_TEXTO)) {
+  const el = document.getElementById(id);
+  if (el) el.addEventListener("change", salvarPreferencias);
+}
+carregarPreferencias();
+
+dropzone.addEventListener("click", () => fileInput.click());
+dropzone.addEventListener("dragover", (e) => {
+  e.preventDefault();
+  dropzone.classList.add("dragover");
+});
+dropzone.addEventListener("dragleave", () => dropzone.classList.remove("dragover"));
+dropzone.addEventListener("drop", (e) => {
+  e.preventDefault();
+  dropzone.classList.remove("dragover");
+  const files = e.dataTransfer.files;
+  if (files && files.length) handleFiles(files);
+});
+fileInput.addEventListener("change", () => {
+  const files = fileInput.files;
+  if (files && files.length) handleFiles(files);
+});
+
+// ------------------------------------------------------------------
+// Entrada: aceita vários arquivos de uma vez e abre .zip sozinho
+// ------------------------------------------------------------------
+async function expandFiles(fileList) {
+  const out = [];
+  for (const f of Array.from(fileList)) {
+    if (/\.zip$/i.test(f.name)) {
+      const zip = await JSZip.loadAsync(await f.arrayBuffer());
+      for (const path of Object.keys(zip.files)) {
+        const entry = zip.files[path];
+        if (entry.dir) continue;
+        const bytes = await entry.async("uint8array");
+        out.push({ name: path.split("/").pop(), bytes, from: f.name });
+      }
+    } else {
+      out.push({ name: f.name, bytes: new Uint8Array(await f.arrayBuffer()) });
+    }
+  }
+  return out;
+}
+
+// Descobre o que é cada PDF olhando o texto das primeiras páginas.
+// A ORDEM dos testes importa: a etiqueta da Shopee também traz "DANFE
+// SIMPLIFICADO" (a DANFE vem impressa dentro dela), então ela precisa ser
+// reconhecida pelo par DESTINATÁRIO + Pedido: ANTES do teste do ML.
+async function classifyPdf(bytes) {
+  const doc = await pdfjsLib.getDocument({ data: bytes.slice(0) }).promise;
+  let text = "";
+  const n = Math.min(doc.numPages, 3);
+  for (let i = 1; i <= n; i++) {
+    const page = await doc.getPage(i);
+    const tc = await page.getTextContent();
+    text += " " + tc.items.map((x) => x.str).join(" ");
+  }
+  // A Amazon é testada primeiro: a guia de remessa tem "ID do pedido:" e
+  // "Detalhes do produto", e a etiqueta tem "Pickup ID"/"Order ID".
+  if (/ID do pedido:/i.test(text) && /Detalhes do produto/i.test(text)) return "amazon-guia";
+  if (/Pickup ID/i.test(text) || /Order\s*I[dD]\s*:/i.test(text)) return "amazon-etiqueta";
+
+  const temEtiqueta = /DESTINAT[ÁA]RIO/i.test(text);
+  const temChecklist = /Checklist de carregamento/i.test(text);
+  if (temEtiqueta && temChecklist) return "shopee-combo";
+  if (temChecklist) return "shopee-checklist";
+  if (/Checklist de separa/i.test(text)) return "shopee-lista-produtos";
+  if (temEtiqueta && /Pedido\s*:/i.test(text)) return "shopee-etiqueta";
+  if (/DANFE SIMPLIFICADO/i.test(text) || /Despachar|Venda\s*:/i.test(text)) return "ml";
+  // Etiqueta da Amazon costuma vir como IMAGEM pura, sem nenhum texto
+  // extraível — é o caso mais comum. Um PDF sem texto algum é isso.
+  if (!text.trim()) return "amazon-etiqueta";
+  // PDF que passou por "imprimir → salvar como PDF" (PScript5/Ghostscript):
+  // as letras viram desenho e o texto sai embaralhado ("!\"#$%&'()"), sem
+  // nenhuma palavra de verdade. Reconhece isso pra dar a orientação certa.
+  const palavras = (text.match(/[A-Za-zÀ-ÿ]{4,}/g) || []).length;
+  let produtor = "";
+  try {
+    const meta = await doc.getMetadata();
+    produtor = ((meta.info && (meta.info.Producer + " " + meta.info.Creator)) || "");
+  } catch (e) {}
+  if (/ghostscript|pscript/i.test(produtor) || palavras < 5) return "sem-texto";
+  return "desconhecido";
+}
+
+async function classifyFiles(items) {
+  const res = {
+    excel: null,
+    zpl: null,
+    amazonGuia: null,
+    amazonEtiquetas: null,
+    shopeeComboPdf: null,
+    shopeeEtiquetaPdf: null,
+    shopeeChecklistPdf: null,
+    mlPdf: null,
+    rotulos: [],
+  };
+  for (const it of items) {
+    const nome = it.name;
+    if (/\.(xlsx|xlsm|xls)$/i.test(nome)) {
+      res.excel = it;
+      res.rotulos.push([nome, "Lista de empacotamento (Excel)"]);
+      continue;
+    }
+    if (/\.(txt|zpl|prn)$/i.test(nome)) {
+      const head = new TextDecoder("utf-8").decode(it.bytes.slice(0, 4000));
+      if (/\^XA|~DG/.test(head)) {
+        it.text = new TextDecoder("utf-8").decode(it.bytes);
+        res.zpl = it;
+        res.rotulos.push([nome, "Etiquetas ZPL (térmica)"]);
+      } else {
+        res.rotulos.push([nome, "ignorado (texto não é ZPL)"]);
+      }
+      continue;
+    }
+    if (/\.pdf$/i.test(nome)) {
+      const kind = await classifyPdf(it.bytes);
+      if (kind === "ml") {
+        res.mlPdf = it;
+        res.rotulos.push([nome, "Etiquetas Mercado Livre"]);
+      } else if (kind === "amazon-guia") {
+        res.amazonGuia = it;
+        res.rotulos.push([nome, "Guia de remessa da Amazon"]);
+      } else if (kind === "amazon-etiqueta") {
+        res.amazonEtiquetas = it;
+        res.rotulos.push([nome, "Etiquetas Amazon"]);
+      } else if (kind === "shopee-combo") {
+        res.shopeeComboPdf = it;
+        res.rotulos.push([nome, "Shopee: etiqueta + checklist no mesmo PDF ✓"]);
+      } else if (kind === "shopee-etiqueta") {
+        res.shopeeEtiquetaPdf = it;
+        res.rotulos.push([nome, "Etiquetas Shopee (PDF)"]);
+      } else if (kind === "shopee-checklist") {
+        res.shopeeChecklistPdf = it;
+        res.rotulos.push([nome, "Checklist de carregamento (só de reserva)"]);
+      } else if (kind === "sem-texto") {
+        res.semTexto = true;
+        res.rotulos.push([nome, "PDF sem texto legível — foi salvo por impressora de PDF"]);
+      } else if (kind === "shopee-lista-produtos") {
+        res.rotulos.push([nome, "Lista de produtos — não serve p/ identificar pedido, ignorada"]);
+      } else {
+        res.rotulos.push([nome, "não reconhecido, ignorado"]);
+      }
+      continue;
+    }
+    res.rotulos.push([nome, "tipo não suportado, ignorado"]);
+  }
+  return res;
+}
+
+function renderFileList(rotulos) {
+  if (!rotulos.length) {
+    fileListEl.innerHTML = "";
+    return;
+  }
+  fileListEl.innerHTML =
+    '<div style="margin-top:14px">' +
+    rotulos
+      .map(
+        ([n, papel]) =>
+          `<div class="title-row"><span class="venda">${escapeHtml(n)}</span><span class="titulo" style="font-weight:400;color:#6b6b6b">${escapeHtml(papel)}</span></div>`
+      )
+      .join("") +
+    "</div>";
+}
+
+function ligarCopiaDiagnostico() {
+  const botao = document.getElementById("copiarDiag");
+  const bloco = document.getElementById("diagBruto");
+  if (!botao || !bloco) return;
+  botao.addEventListener("click", async () => {
+    try {
+      await navigator.clipboard.writeText(bloco.textContent);
+      botao.textContent = "Copiado!";
+    } catch (e) {
+      const sel = window.getSelection();
+      const range = document.createRange();
+      range.selectNodeContents(bloco);
+      sel.removeAllRanges();
+      sel.addRange(range);
+      botao.textContent = "Selecionado — use Ctrl+C";
+    }
+    setTimeout(() => (botao.textContent = "Copiar"), 2500);
+  });
+}
+
+async function handleFiles(fileList) {
+  downloadArea.style.display = "none";
+  titlesPreviewEl.innerHTML = "";
+  fileListEl.innerHTML = "";
+
+  try {
+    setStatus("Abrindo os arquivos...");
+    window.__diagFolha = [];
+    const cfg = lerConfig();
+    const items = await expandFiles(fileList);
+    const cls = await classifyFiles(items);
+    renderFileList(cls.rotulos);
+
+    let result, formatLabel;
+
+    if (cls.mlPdf) {
+      formatLabel = "Mercado Livre";
+      result = await stampTitlesOnPdf(cls.mlPdf.bytes.slice(0), (m) => setStatus(m), cfg);
+    } else if (cls.amazonEtiquetas || cls.amazonGuia) {
+      formatLabel = "Amazon";
+      result = await processAmazon(cls, (m) => setStatus(m), cfg);
+    } else if (cls.zpl || cls.shopeeEtiquetaPdf || cls.shopeeComboPdf) {
+      formatLabel = "Shopee";
+      result = await processShopee(cls, (m) => setStatus(m), cfg);
+    } else if (cls.semTexto) {
+      setStatus(
+        "Esse PDF não tem texto que dê pra ler: ele passou por uma impressora de PDF (\"Imprimir → Salvar como PDF\" / PDF Creator), que transforma as letras em desenho. Baixe o PDF de novo direto do Mercado Livre (com a folha de controle de pacotes ativada) e solte o arquivo original aqui, sem abrir e imprimir antes.",
+        "error"
+      );
+      return;
+    } else {
+      setStatus(
+        "Não encontrei nenhum arquivo de etiqueta aqui. Solte o PDF do Mercado Livre; na Shopee, a etiqueta junto com a lista de empacotamento; na Amazon, as etiquetas junto com a guia de remessa.",
+        "error"
+      );
+      return;
+    }
+
+    const { pdfBytes, titlesFound, diag } = result;
+
+    const blob = new Blob([pdfBytes], { type: "application/pdf" });
+    const url = URL.createObjectURL(blob);
+    downloadLink.href = url;
+    const base = (cls.mlPdf || cls.shopeeComboPdf || cls.shopeeEtiquetaPdf || cls.amazonEtiquetas || cls.zpl).name.replace(/\.[^.]+$/i, "");
+    const outName = base + "-com-titulo.pdf";
+    downloadLink.download = outName;
+    downloadLink.textContent = "Baixar " + outName;
+    ultimoPdf = { blob, nome: outName };
+    downloadArea.style.display = "block";
+
+    const linhas = [
+      `<b>Diagnóstico (formato detectado: ${formatLabel}):</b>`,
+      `Etiquetas geradas: ${diag.labelPages}`,
+      `Etiquetas com produto identificado: ${diag.matched} · sem identificar: ${diag.unmatched}`,
+    ];
+    if (diag.dataSource) linhas.push(`Origem dos produtos: ${diag.dataSource}`);
+    if (diag.matchMode) linhas.push(`Forma de casamento: ${diag.matchMode}`);
+    if (diag.danfePages !== undefined && formatLabel === "Mercado Livre") {
+      linhas.push(`Páginas de DANFE: ${diag.danfePages} · páginas de etiqueta: ${diag.labelPages}`);
+    }
+    linhas.push(`<b>Folhas de controle retiradas do PDF final: ${diag.folhaPagesRemovidas || 0}</b>`);
+
+    let tecnico = "";
+    if (window.__diagFolha && window.__diagFolha.length) {
+      const bruto = JSON.stringify(window.__diagFolha, null, 1);
+      tecnico =
+        `<details style="margin-top:10px"><summary style="cursor:pointer;font-size:12px">Relatório técnico da leitura (para depuração)</summary>` +
+        `<button type="button" id="copiarDiag" class="btn" style="margin:8px 0;padding:6px 12px;font-size:12px">Copiar</button>` +
+        `<pre id="diagBruto" style="max-height:260px;overflow:auto;background:#fff;border:1px solid #e0e0e0;border-radius:6px;padding:8px;font-size:11px;white-space:pre-wrap">${escapeHtml(bruto)}</pre></details>`;
+    }
+    const diagHtml = `<div style="margin-top:16px;padding:12px;background:#f5f5f5;border-radius:8px;font-size:12px;color:#555;line-height:1.6">${linhas.join("<br/>")}${tecnico}</div>`;
+
+    if (titlesFound.length > 0) {
+      titlesPreviewEl.innerHTML =
+        "<h2>Produtos encontrados</h2>" +
+        titlesFound
+          .map(
+            (t) =>
+              `<div class="title-row"${/CONFERIR/.test(t.title) ? ' style="color:#d32f2f"' : ""}><span class="venda">${escapeHtml(t.venda || "?")}${t.itens > 1 ? ` <b>· ${t.itens} itens</b>` : ""}</span><span class="titulo">${escapeHtml(t.title)}</span></div>`
+          )
+          .join("") +
+        resumoSeparacaoHtml(titlesFound, cfg) +
+        diagHtml;
+      const nConferir = titlesFound.filter((t) => /CONFERIR/.test(t.title)).length;
+      let aviso =
+        diag.unmatched > 0
+          ? ` Atenção: ${diag.unmatched} etiqueta(s) saíram sem produto — confira antes de imprimir.`
+          : "";
+      if (nConferir > 0) aviso += ` ${nConferir} etiqueta(s) com caixas a CONFERIR (em vermelho na lista).`;
+      setStatus(`Pronto! ${diag.matched} de ${diag.labelPages} etiqueta(s) identificadas.` + aviso, aviso ? "error" : "success");
+      ligarCopiaDiagnostico();
+    } else {
+      titlesPreviewEl.innerHTML = diagHtml;
+      ligarCopiaDiagnostico();
+      setStatus(
+        "Gerei o PDF, mas não consegui casar nenhuma etiqueta com um produto. Se for Shopee, confirme que a lista de empacotamento em Excel foi solta junto.",
+        "error"
+      );
+    }
+  } catch (err) {
+    console.error(err);
+    setStatus("Deu erro ao processar: " + (err && err.message ? err.message : err), "error");
+  }
+}
+// Lista de separação: soma as caixas de TODAS as etiquetas do lote, por
+// produto e cor — é o que dá pra levar pro estoque e já puxar tudo de uma vez.
+function resumoSeparacaoHtml(titlesFound, cfg) {
+  if (!cfg.lulli) return "";
+  const mapa = new Map();
+  for (const t of titlesFound) {
+    for (const p of t.produtos || []) {
+      const cx = caixasLulli(p, cfg);
+      if (!cx) continue;
+      const nomeProd = cx.cabeca || "(sem modelo)";
+      for (const it of cx.itens) {
+        const chave = nomeProd + "||" + (it.canon || it.cor);
+        const atual = mapa.get(chave) || { produto: nomeProd, titulo: p.title, cor: it.cor, caixas: 0, resto: 0, conferir: false };
+        atual.caixas += it.caixas;
+        atual.resto += it.resto;
+        atual.conferir = atual.conferir || cx.conferir;
+        mapa.set(chave, atual);
+      }
+    }
+  }
+  if (!mapa.size) return "";
+  const linhas = [...mapa.values()].sort(
+    (a, b) => a.produto.localeCompare(b.produto, "pt-BR", { numeric: true }) || a.cor.localeCompare(b.cor, "pt-BR")
+  );
+  const totalCx = linhas.reduce((s, l) => s + l.caixas, 0);
+  return (
+    `<h2 style="margin-top:24px">Lista de separação — ${totalCx} caixa(s)</h2>` +
+    `<table class="resumo-tab"><thead><tr><th>Produto</th><th>Cor</th><th style="text-align:right">Caixas</th></tr></thead><tbody>` +
+    linhas
+      .map(
+        (l) =>
+          `<tr${l.conferir ? ' class="alerta"' : ""}><td title="${escapeHtml(l.titulo)}">${escapeHtml(l.produto)}</td><td>${escapeHtml(l.cor)}</td>` +
+          `<td class="num">${[l.caixas ? l.caixas + " cx" : "", l.resto ? l.resto + " un" : ""].filter(Boolean).join(" + ") || "0 cx"}</td></tr>`
+      )
+      .join("") +
+    `</tbody></table>`
+  );
+}
+
+// Caixa de teste: mostra na hora como um título + variação vira caixas.
+function atualizarTeste() {
+  const saida = document.getElementById("tSaida");
+  const titulo = document.getElementById("tTitulo").value.trim();
+  if (!titulo) {
+    saida.className = "teste-saida vazio";
+    saida.textContent = "Digite um título acima para ver como fica na etiqueta.";
+    return;
+  }
+  const cfg = lerConfig();
+  const p = {
+    title: titulo,
+    variacao: document.getElementById("tVar").value.trim() || null,
+    qtd: document.getElementById("tQtd").value.trim() || "1",
+    sku: null,
+  };
+  const cx = caixasLulli(p, cfg);
+  saida.className = "teste-saida";
+  if (!cx) {
+    saida.textContent =
+      "Não converte em caixas (sai como: " + montarLinhaProduto(p, cfg) + ")" +
+      (cfg.lulli ? "\nMotivo: título sem unidades (\"160 un\"), sem a palavra exigida, ou com palavra excluída." : "\nA conversão está desligada.");
+    return;
+  }
+  saida.textContent =
+    montarLinhaProduto(p, cfg) +
+    `\nModelo: ${(() => { const m = acharModelo(p.title, cfg); return m.conhecido ? "achado no título" : m.padrao ? "padrão (nenhum da lista no título)" : "deduzido do título"; })()}` +
+    `\nCores lidas da ${cx.origemCor || "—"}` +
+    (cx.avisos.length ? "\nAtenção: " + cx.avisos.join("; ") : "");
+}
+for (const id of ["tTitulo", "tVar", "tQtd", "lAtivo", "lMostrarUn", "lCaixa", "lIncluir", "lExcluir", "lModelos", "lModeloPadrao", "lCaixaModelo", "lNaoCor", "lTrocaCor", "lTrocaCorModelos", "lCorDupla", "lCompostas", "lAbrev", "lTrocarTitulo", "fNome", "fSku"]) {
+  const el = document.getElementById(id);
+  if (el) el.addEventListener("input", atualizarTeste);
+  if (el) el.addEventListener("change", atualizarTeste);
+}
+
+function escapeHtml(str) {
+  const div = document.createElement("div");
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+// ---- A partir daqui, a lógica de extração/edição ----
+//
+// IMPORTANTE: alguns geradores de PDF (inclusive o do Mercado Livre) quebram
+// uma mesma palavra em vários "itens" de texto internos (por causa do
+// espaçamento entre letras/kerning). Se a gente simplesmente colocar um
+// espaço entre cada item, palavras como "Venda:" ou "Identificação" podem
+// virar "V enda :" ou coisa parecida, quebrando as buscas por texto. Por
+// isso, só inserimos espaço onde existe mesmo uma lacuna visual real entre
+// um item e o próximo (ou quando muda de linha).
+function smartJoin(items) {
+  let text = "";
+  let prev = null;
+  for (const it of items) {
+    if (prev) {
+      const sameLine = Math.abs(prev.y - it.y) < 3;
+      if (!sameLine) {
+        text += " ";
+      } else {
+        const gap = it.x - (prev.x + (prev.width || 0));
+        const threshold = Math.max(1, (prev.height || 8) * 0.3);
+        if (gap > threshold) text += " ";
+      }
+    }
+    text += it.str;
+    prev = it;
+  }
+  return text;
+}
+
+function groupIntoLines(items) {
+  const sorted = [...items].sort((a, b) => b.y - a.y || a.x - b.x);
+  const lineGroups = [];
+  let current = null;
+  const TOL = 2.5;
+  for (const it of sorted) {
+    if (current && Math.abs(current.y - it.y) <= TOL) {
+      current.items.push(it);
+    } else {
+      current = { y: it.y, items: [it] };
+      lineGroups.push(current);
+    }
+  }
+  return lineGroups.map((g) => ({ y: g.y, text: smartJoin(g.items), h: Math.max(...g.items.map((i) => i.height || 0)) }));
+}
+
+const ATTRIBUTE_LABEL = /^(SKU|Quantidade|Cor|Tamanho|Comprimento|Largura|Altura|Profundidade|Diâmetro|Espessura|Peso|Volume|Capacidade|Piezas|Unidades|Modelo|Material|Voltagem|Tensão|Potência|Formato|Forma|Estilo|Marca|Tipo|Sabor|Fragrância|Idioma|Versão|Variação|Gênero|Idade|Nome do desenho|Desenho do tecido|Composição|Acabamento):/i;
+
+// Rótulo genérico: "Alguma Coisa: valor". A lista acima nunca vai cobrir todos
+// os atributos que o ML inventa por categoria — "Tamanho" mesmo estava
+// faltando e virava um produto fantasma na etiqueta. Esta checagem só é usada
+// quando JÁ existe um produto aberto, então ela nunca engole o título do
+// primeiro item de um pedido. Os limites (rótulo curto, poucas palavras, linha
+// curta) evitam confundir com nome de produto, que é sempre longo.
+const ROTULO_GENERICO = /^([A-Za-zÀ-ÿ][A-Za-zÀ-ÿ\s./-]{1,24}):\s*\S/;
+function pareceRotuloDeAtributo(texto) {
+  const m = texto.match(ROTULO_GENERICO);
+  if (!m) return false;
+  return m[1].trim().split(/\s+/).length <= 3 && texto.length <= 80;
+}
+
+// Corta uma lista de linhas em N blocos, usando as N-1 maiores frestas
+// verticais como separadores. Serve pra separar os produtos de pedidos
+// diferentes sem depender de onde o identificador está desenhado.
+function dividirEmBlocos(linhas, quantidade) {
+  const ordenadas = [...linhas].sort((a, b) => b.y - a.y);
+  if (quantidade <= 1) return [ordenadas];
+  if (ordenadas.length <= 1) return Array.from({ length: quantidade }, () => []);
+
+  const frestas = [];
+  for (let i = 1; i < ordenadas.length; i++) {
+    frestas.push({ indice: i, tamanho: ordenadas[i - 1].y - ordenadas[i].y });
+  }
+  frestas.sort((a, b) => b.tamanho - a.tamanho);
+
+  const cortes = frestas
+    .slice(0, quantidade - 1)
+    .map((f) => f.indice)
+    .sort((a, b) => a - b);
+
+  const blocos = [];
+  let inicio = 0;
+  for (const corte of cortes) {
+    blocos.push(ordenadas.slice(inicio, corte));
+    inicio = corte;
+  }
+  blocos.push(ordenadas.slice(inicio));
+  while (blocos.length < quantidade) blocos.push([]);
+  return blocos;
+}
+
+function extractTitlesFromFolha(items) {
+  const headerItem = items.find((it) => /Identif/i.test(it.str));
+  const tableItems = headerItem ? items.filter((it) => it.y < headerItem.y) : items;
+  if (tableItems.length === 0) return {};
+
+  const xs = [...new Set(tableItems.map((it) => it.x))].sort((a, b) => a - b);
+  let boundary = null;
+  let maxGap = 0;
+  for (let i = 1; i < xs.length; i++) {
+    const gap = xs[i] - xs[i - 1];
+    if (gap > maxGap) {
+      maxGap = gap;
+      boundary = (xs[i] + xs[i - 1]) / 2;
+    }
+  }
+  if (boundary === null) return {};
+
+  const leftLines = groupIntoLines(tableItems.filter((it) => it.x < boundary));
+  const rightLines = groupIntoLines(tableItems.filter((it) => it.x >= boundary));
+
+  const vendaMarkers = [];
+  const packIdLines = [];
+  for (const line of leftLines) {
+    const vMatch = line.text.match(/Venda:\s*([\d ]{10,25})/i);
+    if (vMatch) vendaMarkers.push({ y: line.y, number: vMatch[1].replace(/\s+/g, "") });
+    const pMatch = line.text.match(/Pack ID:\s*([\d ]{10,25})/i);
+    if (pMatch) packIdLines.push({ y: line.y, packId: pMatch[1].replace(/\s+/g, "") });
+  }
+  vendaMarkers.sort((a, b) => b.y - a.y);
+
+  // O "Pack ID" fica na mesma linha/bloco do pedido, perto do "Venda:" — associa
+  // ao marcador de venda mais próximo em altura (mesmo pedido na folha).
+  for (const p of packIdLines) {
+    let closest = null;
+    let minDist = Infinity;
+    for (const m of vendaMarkers) {
+      const dist = Math.abs(m.y - p.y);
+      if (dist < minDist) {
+        minDist = dist;
+        closest = m;
+      }
+    }
+    if (closest) closest.packId = p.packId;
+  }
+
+  const results = {};
+
+  // Divide a coluna de produtos em blocos, um por pedido.
+  //
+  // As tentativas anteriores comparavam a ALTURA de cada linha com a do
+  // identificador — ponto médio entre identificadores, depois alinhado ao topo.
+  // As duas erraram, porque o ML não desenha o identificador na mesma altura do
+  // primeiro produto do pedido: ele fica mais abaixo, e o quanto abaixo varia
+  // com o tamanho do bloco. O resultado foi um deslocamento de um produto
+  // inteiro entre pedidos vizinhos.
+  //
+  // Este critério não depende disso. Numa tabela, a fresta vertical entre a
+  // última linha de um pedido e a primeira do seguinte é sempre maior que a
+  // fresta entre duas linhas do mesmo pedido (é o espaçamento entre linhas da
+  // tabela). E sabemos exatamente quantos pedidos existem: um por
+  // identificador. Então basta cortar nas N-1 maiores frestas e casar os
+  // blocos com os identificadores de cima para baixo — a ordem é a mesma nas
+  // duas colunas, porque é a mesma tabela.
+  const blocos = dividirEmBlocos(rightLines, vendaMarkers.length);
+
+  for (let i = 0; i < vendaMarkers.length; i++) {
+    const marker = vendaMarkers[i];
+    const candidates = blocos[i] || [];
+
+    // Um mesmo pedido pode ter mais de um produto empilhado na mesma coluna
+    // (ex: "Pacote de 3 produtos"). Cada vez que aparece uma linha que NÃO é
+    // um atributo (SKU/Quantidade/Cor/etc.), é o título de um produto novo;
+    // as linhas seguintes (SKU, Quantidade...) pertencem a esse produto, até
+    // aparecer o próximo título.
+    const products = [];
+    let current = null;
+    let ultimoCampo = null; // "variacao" | "sku" | null — pra emendar linha quebrada
+    for (let ci = 0; ci < candidates.length; ci++) {
+      const c = candidates[ci];
+      const t = c.text.trim();
+      if (!t) continue;
+
+      const qtdMatch = t.match(/Quantidade:\s*(\d+)/i);
+      if (qtdMatch) {
+        if (current) current.quantidade = qtdMatch[1];
+        ultimoCampo = null;
+        continue;
+      }
+
+      const skuMatch = t.match(/^SKU:\s*(.+)$/i);
+      if (skuMatch) {
+        if (current) current.sku = skuMatch[1].trim();
+        ultimoCampo = "sku";
+        continue;
+      }
+
+      // Atributos como "Cor: Preto" ou "Tamanho: Grande" viram a variação do
+      // produto. O segundo teste pega rótulos fora da lista fixa, mas só
+      // quando já há um produto aberto pra receber o atributo.
+      if (ATTRIBUTE_LABEL.test(t) || (current && pareceRotuloDeAtributo(t))) {
+        const attr = t.match(/^[^:]+:\s*(.+)$/);
+        if (current && attr && attr[1].trim()) {
+          current.variacao = current.variacao ? current.variacao + ", " + attr[1].trim() : attr[1].trim();
+          ultimoCampo = "variacao";
+        }
+        continue;
+      }
+
+      // Variação longa também quebra de linha na folha: "Cor: Off White/…/
+      // Verde" + "musgo". Se a linha solta vem logo depois da Cor e a próxima
+      // linha NÃO é SKU/Quantidade (o que indicaria um produto novo do mesmo
+      // pacote), é a continuação da Cor — sem isso o "musgo"/"Kraft" sumia.
+      // Melhor sinal: o tamanho da letra. Na folha o título é maior (8,5) que
+      // os atributos (7,1); linha solta no tamanho de atributo é continuação.
+      // Sem essa informação, olha a linha seguinte: SKU/Quantidade logo depois
+      // indica um produto novo do mesmo pacote.
+      if (current && ultimoCampo) {
+        let continuacao;
+        if (c.h && current.titleH && Math.abs(current.titleH - c.h) > 0.6) {
+          continuacao = c.h < current.titleH;
+        } else {
+          let prox = null;
+          for (let k = ci + 1; k < candidates.length; k++) {
+            const tt = candidates[k].text.trim();
+            if (tt) { prox = tt; break; }
+          }
+          continuacao = !(prox && (/Quantidade:\s*\d+/i.test(prox) || /^SKU:/i.test(prox)));
+        }
+        if (continuacao) {
+          current[ultimoCampo] = (current[ultimoCampo] + " " + t).replace(/\s+/g, " ").trim();
+          continue;
+        }
+      }
+      if (t.length < 3) continue;
+
+      // Título longo quebra em duas (ou mais) linhas na folha. Enquanto o
+      // produto aberto ainda não recebeu nenhum atributo (SKU, Quantidade,
+      // Cor...), uma linha "solta" é continuação do título dele — e não um
+      // produto novo. Sem isso, "…Off White- Pistache" / "Claro - Pistache
+      // Escuro" virava dois produtos e a conta das cores saía errada.
+      if (current && !current.sku && !current.quantidade && !current.variacao) {
+        current.title = (current.title + " " + t).replace(/\s+/g, " ").trim();
+        continue;
+      }
+
+      current = { title: t, sku: null, skuPai: null, variacao: null, quantidade: null, titleH: c.h || 0 };
+      ultimoCampo = null;
+      products.push(current);
+    }
+
+    if (products.length > 0) {
+      results[marker.number] = { products };
+      // Algumas etiquetas mostram "Pack ID:" em vez de "Venda:" — indexa pelos
+      // dois números pra achar o título de qualquer um dos dois jeitos.
+      if (marker.packId) results[marker.packId] = { products };
+    }
+  }
+  // Guarda a geometria bruta lida da folha. É isso que permite descobrir, sem
+  // ficar chutando, ONDE o ML desenha cada coisa dentro da tabela.
+  try {
+    window.__diagFolha = (window.__diagFolha || []).concat([{
+      marcadores: vendaMarkers.map((m) => ({ y: Math.round(m.y), venda: m.number, pack: m.packId || null })),
+      blocos: blocos.map((b, i) => ({ bloco: i, linhas: b.length, deY: b.length ? Math.round(b[0].y) : null, ateY: b.length ? Math.round(b[b.length - 1].y) : null })),
+      linhas: rightLines
+        .slice()
+        .sort((a, b) => b.y - a.y)
+        .map((l) => Math.round(l.y) + "  " + l.text.slice(0, 70)),
+    }]);
+  } catch (e) {
+    /* sem diagnóstico, segue normal */
+  }
+
+  return results;
+}
+
+function drawWrappedText(page, text, { x, y, maxWidth, font, size }) {
+  const words = text.split(" ");
+  let line = "";
+  let cursorY = y;
+  const lineHeight = size * 1.3;
+
+  for (const word of words) {
+    const testLine = line ? `${line} ${word}` : word;
+    const testWidth = font.widthOfTextAtSize(testLine, size);
+    if (testWidth > maxWidth && line) {
+      page.drawText(line, { x, y: cursorY, size, font, color: PDFLib.rgb(0, 0, 0) });
+      line = word;
+      cursorY -= lineHeight;
+    } else {
+      line = testLine;
+    }
+  }
+  if (line) {
+    page.drawText(line, { x, y: cursorY, size, font, color: PDFLib.rgb(0, 0, 0) });
+  }
+}
+
+function wrapTextLines(text, font, size, maxWidth) {
+  const words = text.split(" ");
+  const lines = [];
+  let line = "";
+  for (const word of words) {
+    const testLine = line ? `${line} ${word}` : word;
+    if (font.widthOfTextAtSize(testLine, size) > maxWidth && line) {
+      lines.push(line);
+      line = word;
+    } else {
+      line = testLine;
+    }
+  }
+  if (line) lines.push(line);
+  return lines;
+}
+
+// Desenha uma lista de parágrafos (um por produto) dentro de uma área
+// vertical disponível (yTop até yBottom), diminuindo o tamanho da fonte
+// automaticamente até tudo caber — ou usando o tamanho mínimo, no pior caso.
+// Quanto espaço em altura esse texto ocupa num dado tamanho de fonte.
+function alturaDoTexto(paragraphs, font, size, maxWidth) {
+  if (!paragraphs || paragraphs.length === 0) return 0;
+  const linhas = paragraphs.reduce(
+    (soma, p) => soma + wrapTextLines(p, font, size, maxWidth).length,
+    0
+  );
+  return (linhas + (paragraphs.length - 1) * 0.5) * size * 1.3;
+}
+
+// Último recurso: se nem no menor tamanho o texto couber no espaço, vai
+// tirando os itens do fim até caber e deixa uma linha avisando quantos
+// ficaram de fora. Sem isso o texto continuava sendo desenhado abaixo da área
+// e sumia da página — que é justamente o caso de pacote com muitos itens.
+// Usada tanto pelo Mercado Livre quanto pela Amazon — por isso o aviso é
+// genérico ("confira o pedido completo") em vez de citar um documento
+// específico (a "folha de controle" só existe no fluxo do ML; a Amazon usa a
+// guia de remessa).
+function ajustarParaCaber(paragraphs, font, maxWidth, minSize, alturaDisponivel) {
+  if (!paragraphs || paragraphs.length <= 1) return paragraphs;
+  if (alturaDoTexto(paragraphs, font, minSize, maxWidth) <= alturaDisponivel) return paragraphs;
+
+  const mantidos = paragraphs.slice();
+  while (mantidos.length > 1) {
+    mantidos.pop();
+    const faltando = paragraphs.length - mantidos.length;
+    const teste = mantidos.concat([
+      `+ ${faltando} item(ns) neste pacote — confira o pedido completo`,
+    ]);
+    if (alturaDoTexto(teste, font, minSize, maxWidth) <= alturaDisponivel) return teste;
+  }
+  return mantidos;
+}
+
+function drawFittedParagraphs(page, paragraphs, { x, yTop, yBottom, maxWidth, font, maxSize = 15, minSize = 6.5 }) {
+  const availableHeight = yTop - yBottom;
+  const paragraphGap = 0.5; // espaço extra entre produtos, em "linhas"
+
+  let chosenSize = minSize;
+  let chosenLines = null;
+
+  for (let size = maxSize; size >= minSize; size -= 0.5) {
+    const lineHeight = size * 1.3;
+    const perParagraphLines = paragraphs.map((p) => wrapTextLines(p, font, size, maxWidth));
+    const totalLines = perParagraphLines.reduce((sum, l) => sum + l.length, 0);
+    const totalHeight = (totalLines + (paragraphs.length - 1) * paragraphGap) * lineHeight;
+    if (totalHeight <= availableHeight) {
+      chosenSize = size;
+      chosenLines = perParagraphLines;
+      break;
+    }
+  }
+
+  if (!chosenLines) {
+    chosenSize = minSize;
+    chosenLines = paragraphs.map((p) => wrapTextLines(p, font, chosenSize, maxWidth));
+  }
+
+  const lineHeight = chosenSize * 1.3;
+  // yTop é o TOPO do bloco de texto. Como o drawText posiciona pela linha de
+  // base, a primeira linha começa um "tamanho de fonte" abaixo — senão ela
+  // sobe acima de yTop e invade o que estiver em cima.
+  let cursorY = yTop - chosenSize;
+  for (const lines of chosenLines) {
+    for (const line of lines) {
+      page.drawText(line, { x, y: cursorY, size: chosenSize, font, color: PDFLib.rgb(0, 0, 0) });
+      cursorY -= lineHeight;
+    }
+    cursorY -= lineHeight * paragraphGap;
+  }
+
+  return chosenSize;
+}
+
+async function renderPageToPngBytes(pdfPage) {
+  const viewport = pdfPage.getViewport({ scale: RENDER_SCALE });
+  const canvas = document.createElement("canvas");
+  canvas.width = Math.ceil(viewport.width);
+  canvas.height = Math.ceil(viewport.height);
+  const ctx = canvas.getContext("2d");
+  await pdfPage.render({ canvasContext: ctx, viewport }).promise;
+  const dataUrl = canvas.toDataURL("image/png");
+  const base64 = dataUrl.split(",")[1];
+  const binary = atob(base64);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  return bytes;
+}
+
+async function stampTitlesOnPdf(originalArrayBuffer, onProgress, cfg) {
+  const loadingTask = pdfjsLib.getDocument({ data: originalArrayBuffer.slice(0) });
+  const pdfjsDoc = await loadingTask.promise;
+
+  onProgress && onProgress(`Lendo ${pdfjsDoc.numPages} página(s)...`);
+
+  const pagesInfo = [];
+  for (let i = 1; i <= pdfjsDoc.numPages; i++) {
+    const page = await pdfjsDoc.getPage(i);
+    const textContent = await page.getTextContent();
+    const items = textContent.items
+      .filter((it) => it.str && it.str.trim())
+      .map((it) => ({
+        str: it.str,
+        x: it.transform[4],
+        y: it.transform[5],
+        width: it.width || 0,
+        height: it.height || 8,
+      }));
+    const pageText = smartJoin(items);
+
+    const isFolhaPage = /Identif/i.test(pageText) && /Produtos?\b/i.test(pageText);
+    const isDanfePage = !isFolhaPage && /DANFE SIMPLIFICADO/i.test(pageText);
+    const isLabelPage = !isFolhaPage && !isDanfePage && /Despachar|Venda:/i.test(pageText);
+
+    pagesInfo.push({ pdfPage: page, items, pageText, isFolhaPage, isDanfePage, isLabelPage });
+  }
+
+  const diag = {
+    totalPages: pagesInfo.length,
+    folhaPages: pagesInfo.filter((p) => p.isFolhaPage).length,
+    labelPages: pagesInfo.filter((p) => p.isLabelPage).length,
+    danfePages: pagesInfo.filter((p) => p.isDanfePage).length,
+    vendaMarkersInFolha: 0,
+    folhaPagesRemovidas: 0,
+  };
+
+  let folhaTitles = {};
+  for (const info of pagesInfo) {
+    if (info.isFolhaPage) {
+      const extracted = extractTitlesFromFolha(info.items);
+      diag.vendaMarkersInFolha += Object.keys(extracted).length;
+      Object.assign(folhaTitles, extracted);
+    }
+  }
+
+  const newPdfDoc = await PDFLib.PDFDocument.create();
+  const font = await newPdfDoc.embedFont(PDFLib.StandardFonts.HelveticaBold);
+
+  let lastOrderNumber = null;
+  const titlesFound = [];
+
+  for (let idx = 0; idx < pagesInfo.length; idx++) {
+    const info = pagesInfo[idx];
+    onProgress && onProgress(`Processando página ${idx + 1} de ${pagesInfo.length}...`);
+
+    // A folha de controle de pacotes serve só como FONTE DE DADOS (os títulos
+    // já foram extraídos dela acima). Ela não é renderizada nem adicionada ao
+    // PDF final — é descartada aqui, antes de gastar tempo desenhando.
+    if (info.isFolhaPage) {
+      diag.folhaPagesRemovidas++;
+      continue;
+    }
+
+    const viewport1 = info.pdfPage.getViewport({ scale: 1 });
+    const pngBytes = await renderPageToPngBytes(info.pdfPage);
+    const pngImage = await newPdfDoc.embedPng(pngBytes);
+
+    const newPage = newPdfDoc.addPage([viewport1.width, viewport1.height]);
+    newPage.drawImage(pngImage, {
+      x: 0,
+      y: 0,
+      width: viewport1.width,
+      height: viewport1.height,
+    });
+
+    const vendaMatch = info.pageText.match(/(?:Venda|Pack ID):\s*([\d ]{10,25})/i);
+    if (vendaMatch) lastOrderNumber = vendaMatch[1].replace(/\s+/g, "");
+
+    const info2 = lastOrderNumber ? folhaTitles[lastOrderNumber] : null;
+    if (!info2 || !info2.products || info2.products.length === 0) continue;
+
+    const paragraphs = montarParagrafos(info2.products, cfg, null);
+    if (paragraphs.length === 0) continue;
+
+    if (info.isDanfePage) {
+      // Acha a área em branco de verdade: do fim de "DANFE SIMPLIFICADO" até
+      // o início de "DADOS ADICIONAIS" — assim sabemos exatamente quanto
+      // espaço existe pra decidir o tamanho da fonte.
+      const lines = groupIntoLines(info.items);
+      const headerLine = lines.find((l) => /DANFE SIMPLIFICADO/i.test(l.text));
+      const dadosLine = lines.find((l) => /DADOS ADICIONAIS/i.test(l.text));
+      const yTop = headerLine ? headerLine.y - 20 : viewport1.height * 0.55;
+      const larguraTexto = viewport1.width - 40;
+
+      // Área preferida: entre "DANFE SIMPLIFICADO" e "DADOS ADICIONAIS".
+      // Só que ela é estreita (~70pt) e não segura um pacote com 5 ou 6 itens.
+      // Como a caixa de DADOS ADICIONAIS sai vazia na DANFE simplificada, ela
+      // vira área de transbordo — usada SÓ quando o texto não cabe acima.
+      const yBottomPreferido = dadosLine ? dadosLine.y + 12 : 20;
+      const yBottomEstendido = 16;
+      const minSize = Math.min(cfg.tamMin, 6);
+      // Estende quando a fonte cairia abaixo de 7pt — não só quando estoura.
+      // Com 4 itens dava pra espremer em 6pt na área de cima, mas 6pt em
+      // impressão térmica fica ruim de ler; melhor descer e imprimir em 11pt.
+      const TAM_CONFORTAVEL = 7;
+      let yBottom = yBottomPreferido;
+      if (alturaDoTexto(paragraphs, font, TAM_CONFORTAVEL, larguraTexto) > yTop - yBottomPreferido) {
+        yBottom = yBottomEstendido;
+      }
+
+      // Se nem com a área estendida couber, corta os últimos itens e avisa —
+      // melhor uma linha dizendo que faltou do que produto desenhado fora da
+      // página, que some sem ninguém perceber.
+      const paraDesenhar = ajustarParaCaber(paragraphs, font, larguraTexto, minSize, yTop - yBottom);
+
+      drawFittedParagraphs(newPage, paraDesenhar, {
+        x: 20,
+        yTop,
+        yBottom,
+        maxWidth: larguraTexto,
+        font,
+        maxSize: Math.max(cfg.tamMax, 12),
+        minSize,
+      });
+      titlesFound.push({ venda: lastOrderNumber, title: paragraphs.join("  |  "), itens: info2.products.length, produtos: info2.products });
+    }
+  }
+
+  onProgress && onProgress("Montando PDF final...");
+  const pdfBytes = await newPdfDoc.save();
+  diag.matched = titlesFound.length;
+  diag.unmatched = Math.max(0, diag.danfePages - titlesFound.length);
+  diag.labelPages = diag.labelPages || diag.danfePages;
+  diag.dataSource = `Folha de controle do ML — ${diag.vendaMarkersInFolha} pedido(s)`;
+  diag.matchMode = "pelo nº da Venda / Pack ID";
+  return { pdfBytes, titlesFound, diag };
+}
+
+// ============================================================
+// A PARTIR DAQUI: processamento das etiquetas Shopee
+// ============================================================
+//
+// FONTE DOS PRODUTOS — "Apenas a Lista de Empacotamento" em EXCEL.
+// É um .xlsx com uma aba "orders" e as colunas tracking_number, order_sn e
+// product_info. O product_info já vem estruturado, um bloco por item:
+//   [1] Product Name:...; Variation Name:...; Price: ...; Quantity: 1;
+//       SKU Reference No.: ...; Parent SKU Reference No.: ...;
+//   [2] Product Name:...; ...
+// Ou seja: nada de adivinhar coluna por coordenada como era preciso fazer no
+// checklist em PDF (que vem com o texto rotacionado e em grid 2x2), e pedido
+// com vários produtos sai resolvido de graça pelos marcadores [1], [2], [3].
+//
+// ETIQUETAS — dois caminhos:
+//   • PDF  : a etiqueta traz "Pedido: XXXXX" como TEXTO de verdade, então o
+//            casamento com o Excel é por número de pedido. É o caminho seguro.
+//   • ZPL  : a Shopee manda cada etiqueta como um bitmap puro (~DG ... :Z64:),
+//            sem nenhum texto legível dentro. Aí não há pedido pra ler, e o
+//            casamento é POSICIONAL (1ª etiqueta = 1ª linha do Excel). A
+//            Shopee gera os dois arquivos na mesma ordem, então funciona —
+//            mas só se os dois vierem da MESMA geração/download.
+
+function base64ToBytes(base64) {
+  const binary = atob(base64);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  return bytes;
+}
+
+// ------------------------------------------------------------------
+// Lista de empacotamento em Excel
+// ------------------------------------------------------------------
+
+function findKey(row, wanted) {
+  for (const k of Object.keys(row)) {
+    if (k.trim().toLowerCase() === wanted) return k;
+  }
+  return null;
+}
+
+// Quebra o product_info nos blocos "[n] Product Name: ..." e lê cada campo
+// pelo rótulo. O split usa lookahead no rótulo pra não se perder caso algum
+// nome de produto tenha ";" ou "[2]" no meio.
+function parseProductInfo(raw) {
+  if (!raw) return [];
+  const texto = String(raw);
+  const blocos = texto
+    .split(/(?=\[\d+\]\s*Product Name\s*:)/i)
+    .map((b) => b.replace(/^\[\d+\]\s*/, "").trim())
+    .filter(Boolean);
+
+  const ROTULOS = [
+    "Product Name",
+    "Variation Name",
+    "Price",
+    "Quantity",
+    "SKU Reference No\\.",
+    "Parent SKU Reference No\\.",
+  ];
+  const splitRe = new RegExp(";\\s*(?=(?:" + ROTULOS.join("|") + ")\\s*:)", "i");
+
+  const produtos = [];
+  for (const bloco of blocos) {
+    const campos = {};
+    for (const parte of bloco.split(splitRe)) {
+      const i = parte.indexOf(":");
+      if (i < 0) continue;
+      const chave = parte.slice(0, i).trim().toLowerCase();
+      const valor = parte.slice(i + 1).replace(/;\s*$/, "").trim();
+      if (valor) campos[chave] = valor;
+    }
+    const title = (campos["product name"] || "").replace(/\s+/g, " ").trim();
+    if (!title) continue;
+    produtos.push({
+      title,
+      variacao: campos["variation name"] || null,
+      qtd: campos["quantity"] || null,
+      sku: campos["sku reference no."] || campos["parent sku reference no."] || null,
+      skuPai: campos["parent sku reference no."] || null,
+    });
+  }
+  return produtos;
+}
+
+function parsePackingListExcel(bytes) {
+  const wb = XLSX.read(bytes, { type: "array" });
+  const nomeAba = wb.SheetNames.includes("orders") ? "orders" : wb.SheetNames[0];
+  const linhas = XLSX.utils.sheet_to_json(wb.Sheets[nomeAba], { defval: "" });
+
+  const byOrder = {};
+  const byTracking = {};
+  const obsByOrder = {};
+  const obsByTracking = {};
+  const sequence = [];
+
+  for (const linha of linhas) {
+    const kOrder = findKey(linha, "order_sn");
+    const kTrack = findKey(linha, "tracking_number");
+    const kInfo = findKey(linha, "product_info");
+    const kObs = findKey(linha, "remark_from_buyer");
+    if (!kInfo) continue;
+
+    const produtos = parseProductInfo(linha[kInfo]);
+    if (produtos.length === 0) continue;
+
+    const pedido = kOrder ? String(linha[kOrder]).trim() : null;
+    const tracking = kTrack ? String(linha[kTrack]).trim() : null;
+    const obs = kObs ? String(linha[kObs]).trim() : "";
+
+    if (pedido) {
+      byOrder[pedido] = produtos;
+      if (obs) obsByOrder[pedido] = obs;
+    }
+    if (tracking) {
+      byTracking[tracking] = produtos;
+      if (obs) obsByTracking[tracking] = obs;
+    }
+    sequence.push({ pedido, tracking, produtos, obs });
+  }
+
+  return { byOrder, byTracking, obsByOrder, obsByTracking, sequence, rowCount: linhas.length };
+}
+
+// ------------------------------------------------------------------
+// Etiquetas em ZPL (bitmap ~DG / :Z64:)
+// ------------------------------------------------------------------
+// Cada etiqueta é um "download graphic": ~DG<nome>,<total>,<bytes por linha>,
+// seguido dos dados. :Z64: = zlib + base64 (o que a Shopee usa); :B64: = só
+// base64. O bitmap é 1 bit por pixel, bit ligado = ponto preto.
+
+function decodeZplGraphics(zplText) {
+  const re = /~DG[^,]*,(\d+),(\d+),(:Z64:|:B64:)([A-Za-z0-9+/=\r\n]+?)(?::[0-9a-fA-F]+)?(?=[~^]|$)/g;
+  const saida = [];
+  let m;
+  while ((m = re.exec(zplText)) !== null) {
+    const bytesPorLinha = parseInt(m[2], 10);
+    const codificacao = m[3];
+    const b64 = m[4].replace(/[\r\n]/g, "");
+    let bytes;
+    try {
+      bytes = base64ToBytes(b64);
+      if (codificacao === ":Z64:") bytes = pako.inflate(bytes);
+    } catch (e) {
+      continue;
+    }
+    if (!bytesPorLinha || bytes.length < bytesPorLinha) continue;
+    saida.push({
+      bytes,
+      bytesPorLinha,
+      width: bytesPorLinha * 8,
+      height: Math.floor(bytes.length / bytesPorLinha),
+    });
+  }
+  return saida;
+}
+
+function grfToCanvas(g) {
+  const canvas = document.createElement("canvas");
+  canvas.width = g.width;
+  canvas.height = g.height;
+  const ctx = canvas.getContext("2d");
+  const imgData = ctx.createImageData(g.width, g.height);
+  const d = imgData.data;
+  for (let y = 0; y < g.height; y++) {
+    const base = y * g.bytesPorLinha;
+    for (let bx = 0; bx < g.bytesPorLinha; bx++) {
+      const byte = g.bytes[base + bx];
+      for (let bit = 0; bit < 8; bit++) {
+        const x = bx * 8 + bit;
+        const aceso = (byte >> (7 - bit)) & 1;
+        const i = (y * g.width + x) * 4;
+        const v = aceso ? 0 : 255;
+        d[i] = v;
+        d[i + 1] = v;
+        d[i + 2] = v;
+        d[i + 3] = 255;
+      }
+    }
+  }
+  ctx.putImageData(imgData, 0, 0);
+  return canvas;
+}
+
+function canvasToPngBytes(canvas) {
+  return base64ToBytes(canvas.toDataURL("image/png").split(",")[1]);
+}
+
+// A etiqueta da Shopee vem com uma faixa branca no topo (~4mm) e outra
+// embaixo (~10mm), e o recorte pode trazer sobra em branco dos lados quando a
+// largura da célula é superestimada. Cortar essas bordas mortas é o que
+// permite imprimir a etiqueta ocupando o papel inteiro.
+function trimCanvas(canvas) {
+  const w = canvas.width;
+  const h = canvas.height;
+  const data = canvas.getContext("2d").getImageData(0, 0, w, h).data;
+  const temTinta = (i) => data[i + 3] > 10 && (data[i] + data[i + 1] + data[i + 2]) / 3 < 200;
+
+  function linhaTemTinta(y) {
+    const base = y * w * 4;
+    for (let x = 0; x < w; x++) if (temTinta(base + x * 4)) return true;
+    return false;
+  }
+
+  let topo = 0;
+  while (topo < h && !linhaTemTinta(topo)) topo++;
+  let base = h - 1;
+  while (base > topo && !linhaTemTinta(base)) base--;
+  if (topo >= base) return canvas;
+
+  // Nos lados, uma coluna de pixels só conta como conteúdo se tiver tinta em
+  // VÁRIAS linhas. Isso é de propósito: a linha tracejada de "Corte aqui" tem
+  // 2 ou 3 pixels de altura e atravessa a página inteira — se contasse, ela
+  // sozinha seguraria a borda e o corte lateral nunca aconteceria.
+  const minLinhas = Math.max(5, Math.round(h * 0.005));
+  const contagem = new Uint32Array(w);
+  for (let y = topo; y <= base; y++) {
+    const linha = y * w * 4;
+    for (let x = 0; x < w; x++) if (temTinta(linha + x * 4)) contagem[x]++;
+  }
+  let esq = 0;
+  while (esq < w && contagem[esq] < minLinhas) esq++;
+  let dir = w - 1;
+  while (dir > esq && contagem[dir] < minLinhas) dir--;
+  if (esq >= dir || dir - esq + 1 < w * 0.25) {
+    esq = 0;
+    dir = w - 1; // corte lateral suspeito: melhor não mexer
+  }
+
+  const margemV = Math.round(h * 0.006);
+  const margemH = Math.round(w * 0.006);
+  topo = Math.max(0, topo - margemV);
+  base = Math.min(h - 1, base + margemV);
+  esq = Math.max(0, esq - margemH);
+  dir = Math.min(w - 1, dir + margemH);
+
+  const novaLargura = dir - esq + 1;
+  const novaAltura = base - topo + 1;
+  if (novaLargura >= w * 0.995 && novaAltura >= h * 0.995) return canvas;
+  if (novaAltura < h * 0.5) return canvas;
+
+  const out = document.createElement("canvas");
+  out.width = novaLargura;
+  out.height = novaAltura;
+  const octx = out.getContext("2d");
+  octx.fillStyle = "#ffffff";
+  octx.fillRect(0, 0, novaLargura, novaAltura);
+  octx.drawImage(canvas, esq, topo, novaLargura, novaAltura, 0, 0, novaLargura, novaAltura);
+  return out;
+}
+
+// ------------------------------------------------------------------
+// Montagem das "unidades" de etiqueta (uma por pacote)
+// ------------------------------------------------------------------
+
+function unitsFromZpl(zplText) {
+  return decodeZplGraphics(zplText).map((g) => {
+    const canvas = trimCanvas(grfToCanvas(g));
+    return {
+      pngBytes: canvasToPngBytes(canvas),
+      aspect: canvas.width / canvas.height,
+      pedido: null, // bitmap: não há texto pra ler
+    };
+  });
+}
+
+async function unitsFromLabelPdf(bytes, onProgress) {
+  const pdfjsDoc = await pdfjsLib.getDocument({ data: bytes.slice(0) }).promise;
+  const unidades = [];
+
+  for (let p = 1; p <= pdfjsDoc.numPages; p++) {
+    const page = await pdfjsDoc.getPage(p);
+    const textContent = await page.getTextContent();
+    const items = textContent.items
+      .filter((it) => it.str && it.str.trim())
+      .map((it) => ({
+        str: it.str,
+        x: it.transform[4],
+        y: it.transform[5],
+        width: it.width || 0,
+        height: it.height || 8,
+      }));
+
+    const destMarkers = items
+      .filter((it) => /DESTINAT[ÁA]RIO/i.test(it.str))
+      .map((it) => it.y)
+      .sort((a, b) => b - a);
+    if (destMarkers.length === 0) continue;
+
+    onProgress && onProgress(`Recortando etiquetas da página ${p} de ${pdfjsDoc.numPages}...`);
+
+    const viewport1 = page.getViewport({ scale: 1 });
+    const contentMaxX = Math.max(...items.map((it) => it.x + 40), 283);
+    const labelWidthPt = Math.min(Math.max(contentMaxX, 260), 320);
+
+    const renderViewport = page.getViewport({ scale: RENDER_SCALE });
+    const fullCanvas = document.createElement("canvas");
+    fullCanvas.width = Math.ceil(renderViewport.width);
+    fullCanvas.height = Math.ceil(renderViewport.height);
+    const fullCtx = fullCanvas.getContext("2d");
+    fullCtx.fillStyle = "#ffffff"; // sem isso o fundo sai transparente
+    fullCtx.fillRect(0, 0, fullCanvas.width, fullCanvas.height);
+    await page.render({ canvasContext: fullCtx, viewport: renderViewport }).promise;
+
+    for (let m = 0; m < destMarkers.length; m++) {
+      const yTopPt = destMarkers[m];
+      const yBottomPt = m < destMarkers.length - 1 ? destMarkers[m + 1] : 0;
+      const blockHeightPt = yTopPt - yBottomPt;
+      const blockTopFromPageTop = viewport1.height - yTopPt;
+
+      const s = RENDER_SCALE;
+      const srcY = Math.max(0, blockTopFromPageTop * s - 5 * s);
+      const srcW = Math.min(fullCanvas.width, labelWidthPt * s + 10 * s);
+      const srcH = Math.min(fullCanvas.height - srcY, blockHeightPt * s + 10 * s);
+
+      const cropCanvas = document.createElement("canvas");
+      cropCanvas.width = srcW;
+      cropCanvas.height = srcH;
+      const cropCtx = cropCanvas.getContext("2d");
+      cropCtx.fillStyle = "#ffffff";
+      cropCtx.fillRect(0, 0, srcW, srcH);
+      cropCtx.drawImage(fullCanvas, 0, srcY, srcW, srcH, 0, 0, srcW, srcH);
+      const cropFinal = trimCanvas(cropCanvas);
+
+      const labelItems = items.filter((it) => it.y <= yTopPt + 5 && it.y > yBottomPt - 5);
+      const labelText = smartJoin(labelItems);
+      const pedidoMatch = labelText.match(/Pedido\s*:\s*([A-Z0-9]+)/i);
+      const trackingMatch = labelText.match(/\b(BR\d{9,}[A-Z0-9])\b/i);
+
+      unidades.push({
+        pngBytes: canvasToPngBytes(cropFinal),
+        aspect: cropFinal.width / cropFinal.height,
+        pedido: pedidoMatch ? pedidoMatch[1].trim() : null,
+        tracking: trackingMatch ? trackingMatch[1].trim() : null,
+      });
+    }
+  }
+  return unidades;
+}
+
+// ------------------------------------------------------------------
+// PDF combinado: "Etiqueta de Envio e Lista de Empacotamento"
+// ------------------------------------------------------------------
+// É o formato mais fácil de todos: um A4 dividido em células, e cada célula
+// traz a etiqueta em cima e, logo abaixo do "Corte aqui", o checklist DAQUELE
+// pedido — com o texto na horizontal e a tabela alinhada por coluna. O nº do
+// pedido aparece nos dois lugares ("Pedido: X" na etiqueta e "ID Pedido X
+// package 1" no card), então o casamento é por ID e não sobra adivinhação.
+
+function clusterX(valores, tolerancia) {
+  const ordenados = [...valores].sort((a, b) => a - b);
+  const grupos = [];
+  for (const v of ordenados) {
+    const ultimo = grupos[grupos.length - 1];
+    if (ultimo && v - ultimo[ultimo.length - 1] <= tolerancia) ultimo.push(v);
+    else grupos.push([v]);
+  }
+  return grupos.map((g) => g.reduce((a, b) => a + b, 0) / g.length);
+}
+
+// O gerador de PDF da Shopee às vezes emite o fim do nome do produto e o
+// começo do SKU num único pedaço de texto ("+0025"), porque a folga entre eles
+// é de menos de 3pt. Quando um item atravessa a fronteira de duas colunas da
+// tabela, ele é cortado proporcionalmente na fronteira.
+function splitItemsAtColumns(items, colXs) {
+  const out = [];
+  for (const it of items) {
+    const largura = it.width || 0;
+    const fim = it.x + largura;
+    const cortes = colXs.filter((cx) => cx > it.x + 1 && cx < fim - 1).sort((a, b) => a - b);
+    if (cortes.length === 0 || !largura || !it.str.length) {
+      out.push(it);
+      continue;
+    }
+    const larguraPorChar = largura / it.str.length;
+    const pontos = [it.x, ...cortes, fim];
+    let ini = 0;
+    for (let k = 1; k < pontos.length; k++) {
+      const idxFim =
+        k === pontos.length - 1
+          ? it.str.length
+          : Math.min(it.str.length, Math.max(ini, Math.floor((pontos[k] - it.x) / larguraPorChar)));
+      const pedaco = it.str.slice(ini, idxFim);
+      if (pedaco.trim()) {
+        out.push({ str: pedaco, x: pontos[k - 1], y: it.y, width: (idxFim - ini) * larguraPorChar, height: it.height });
+      }
+      ini = idxFim;
+    }
+  }
+  return out;
+}
+
+// Junta os pedaços de um campo respeitando as quebras de linha. Se uma linha
+// termina em "-", é hifenização do próprio nome ("T-" + "1" = "T-1") e a
+// emenda tem que ser sem espaço.
+function joinCampo(lista) {
+  if (!lista || lista.length === 0) return null;
+  const linhas = [];
+  for (const it of [...lista].sort((a, b) => b.y - a.y || a.x - b.x)) {
+    const ultima = linhas[linhas.length - 1];
+    if (ultima && Math.abs(ultima.y - it.y) < 2) ultima.partes.push(it.str.trim());
+    else linhas.push({ y: it.y, partes: [it.str.trim()] });
+  }
+  let texto = "";
+  for (const l of linhas) {
+    const s = l.partes.join(" ").replace(/\s+/g, " ").trim();
+    if (!s) continue;
+    if (!texto) texto = s;
+    else if (/-$/.test(texto)) texto += s;
+    else texto += " " + s;
+  }
+  return texto || null;
+}
+
+// O smartJoin() é conservador: só põe espaço quando existe folga visual real
+// entre dois itens. Isso evita transformar "Venda:" em "V enda :", mas neste
+// PDF da Shopee a letra é minúscula (5pt) e as folgas ficam abaixo do limite,
+// então ele cola tudo ("IDPedido2607205YCA93X8package1"). A junção "solta"
+// abaixo faz o oposto: agrupa por linha e separa tudo com espaço. Uma erra num
+// caso, a outra no outro — por isso o número do pedido é procurado nas duas.
+function joinLoose(items) {
+  const linhas = [];
+  for (const it of [...items].sort((a, b) => b.y - a.y || a.x - b.x)) {
+    const ultima = linhas[linhas.length - 1];
+    if (ultima && Math.abs(ultima.y - it.y) < 2.5) ultima.partes.push(it.str.trim());
+    else linhas.push({ y: it.y, partes: [it.str.trim()] });
+  }
+  return linhas.map((l) => l.partes.join(" ")).join("\n");
+}
+
+function acharPedido(items, regexes) {
+  for (const texto of [smartJoin(items), joinLoose(items)]) {
+    for (const re of regexes) {
+      const m = texto.match(re);
+      if (m && m[1]) return m[1].trim();
+    }
+  }
+  return null;
+}
+
+// Nº do pedido tem só maiúsculas e dígitos. As classes abaixo são sensíveis a
+// caixa DE PROPÓSITO: quando o smartJoin cola tudo ("...X8package1"), é isso
+// que faz a captura parar sozinha no "package" minúsculo que vem grudado.
+const RE_PEDIDO_CARD = [
+  /([0-9A-Z]{8,})\s*package\s*\d+/i,
+  /ID\s*Pedido\s*([0-9A-Z]{8,})/,
+  /ID\s*PEDIDO\s*([0-9A-Z]{8,})/,
+];
+const RE_PEDIDO_ETIQUETA = [
+  /Pedido\s*:?\s*([0-9A-Z]{8,})/,
+  /PEDIDO\s*:?\s*([0-9A-Z]{8,})/,
+  /Pedido\s*:?\s*([0-9A-Za-z]{8,})/i,
+];
+
+function parseComboCard(items) {
+  const pedido = acharPedido(items, RE_PEDIDO_CARD);
+
+  const hdr = {};
+  for (const it of items) {
+    const t = it.str.trim();
+    if (t === "#") hdr.num = it;
+    else if (/^Produtos?$/i.test(t)) hdr.produto = it;
+    else if (/^SKU$/i.test(t)) hdr.sku = it;
+    else if (/^Varia[çc][ãa]o$/i.test(t)) hdr.variacao = it;
+    else if (/^(Quantidade|Qnt|Qtd)$/i.test(t)) hdr.qtd = it;
+  }
+  if (!hdr.produto) return { pedido, produtos: [] };
+
+  const cols = Object.keys(hdr)
+    .map((campo) => ({ campo, x: hdr[campo].x }))
+    .sort((a, b) => a.x - b.x);
+  const colXs = cols.map((c) => c.x);
+  const headerY = hdr.produto.y;
+
+  const dados = splitItemsAtColumns(items.filter((it) => it.y < headerY - 1), colXs);
+
+  function colunaDe(x) {
+    let escolhida = cols[0].campo;
+    for (const c of cols) if (x >= c.x - 3) escolhida = c.campo;
+    return escolhida;
+  }
+
+  // Cada linha da tabela é ancorada pelo número da coluna "#".
+  let ancoras = [];
+  if (hdr.num) {
+    const limite = (cols.find((c) => c.campo === "produto") || { x: Infinity }).x - 3;
+    ancoras = dados
+      .filter((it) => it.x >= hdr.num.x - 3 && it.x < limite && /^\d+$/.test(it.str.trim()))
+      .map((it) => it.y)
+      .sort((a, b) => b - a);
+  }
+  if (ancoras.length === 0) ancoras = [headerY - 1];
+
+  const baldes = ancoras.map(() => ({ produto: [], sku: [], variacao: [], qtd: [] }));
+  for (const it of dados) {
+    const campo = colunaDe(it.x);
+    if (campo === "num") continue;
+    let idx = -1;
+    for (let i = 0; i < ancoras.length; i++) if (it.y <= ancoras[i] + 2) idx = i;
+    if (idx < 0 || !baldes[idx][campo]) continue;
+    baldes[idx][campo].push(it);
+  }
+
+  const produtos = baldes
+    .map((b) => ({
+      title: joinCampo(b.produto),
+      sku: joinCampo(b.sku),
+      variacao: joinCampo(b.variacao),
+      qtd: joinCampo(b.qtd),
+    }))
+    .filter((p) => p.title);
+
+  return { pedido, produtos };
+}
+
+async function unitsFromComboPdf(bytes, onProgress) {
+  const doc = await pdfjsLib.getDocument({ data: bytes.slice(0) }).promise;
+
+  const paginas = [];
+  for (let i = 1; i <= doc.numPages; i++) {
+    const page = await doc.getPage(i);
+    const tc = await page.getTextContent();
+    const items = tc.items
+      .filter((it) => it.str && it.str.trim())
+      .map((it) => ({
+        str: it.str,
+        x: it.transform[4],
+        y: it.transform[5],
+        width: it.width || 0,
+        height: it.height || 8,
+      }));
+    paginas.push({ page, items, viewport: page.getViewport({ scale: 1 }) });
+  }
+
+  // A geometria das colunas é colhida do documento INTEIRO: a última página
+  // costuma ter uma coluna só, e sozinha ela não revelaria a largura da célula.
+  const xsDest = [];
+  for (const p of paginas) {
+    for (const it of p.items) if (/DESTINAT[ÁA]RIO/i.test(it.str)) xsDest.push(it.x);
+  }
+  const ancorasX = clusterX(xsDest, 25);
+  const larguraPagina = paginas[0].viewport.width;
+  const recuo = ancorasX.length ? ancorasX[0] : 0;
+  let larguraCol = larguraPagina - recuo;
+
+  if (ancorasX.length > 1) {
+    // Caso normal: a distância entre duas colunas É a largura da célula.
+    larguraCol = Math.min(...ancorasX.slice(1).map((a, i) => a - ancorasX[i]));
+  } else {
+    // Remessa com um pedido só: não há segunda coluna pra medir. Mas o
+    // "Corte aqui" é desenhado CENTRALIZADO na célula, então o centro dele
+    // revela a largura: célula = 2 × (centro − início da célula).
+    let melhor = null;
+    for (const p of paginas) {
+      const corte = p.items
+        .filter((it) => /^Corte/i.test(it.str.trim()))
+        .sort((a, b) => b.y - a.y)[0];
+      if (!corte) continue;
+      const naLinha = p.items.filter((it) => Math.abs(it.y - corte.y) < 2.5);
+      const x0 = Math.min(...naLinha.map((it) => it.x));
+      const x1 = Math.max(...naLinha.map((it) => it.x + (it.width || 0)));
+      const centro = (x0 + x1) / 2;
+      const largura = 2 * (centro - Math.max(0, ancorasX[0] - recuo));
+      if (largura > 100 && largura <= larguraPagina + 1) {
+        melhor = melhor === null ? largura : Math.min(melhor, largura);
+      }
+    }
+    if (melhor !== null) larguraCol = melhor;
+  }
+
+  const unidades = [];
+  for (let pi = 0; pi < paginas.length; pi++) {
+    const info = paginas[pi];
+    const marcadores = info.items
+      .filter((it) => /DESTINAT[ÁA]RIO/i.test(it.str))
+      .sort((a, b) => b.y - a.y || a.x - b.x);
+    if (marcadores.length === 0) continue;
+
+    onProgress && onProgress(`Recortando etiquetas da página ${pi + 1} de ${paginas.length}...`);
+
+    const renderViewport = info.page.getViewport({ scale: RENDER_SCALE });
+    const fullCanvas = document.createElement("canvas");
+    fullCanvas.width = Math.ceil(renderViewport.width);
+    fullCanvas.height = Math.ceil(renderViewport.height);
+    const fullCtx = fullCanvas.getContext("2d");
+    fullCtx.fillStyle = "#ffffff";
+    fullCtx.fillRect(0, 0, fullCanvas.width, fullCanvas.height);
+    await info.page.render({ canvasContext: fullCtx, viewport: renderViewport }).promise;
+
+    for (const marcador of marcadores) {
+      const colIni = Math.max(0, marcador.x - recuo);
+      const colFim = Math.min(info.viewport.width, colIni + larguraCol);
+      const naColuna = (it) => it.x >= colIni - 1 && it.x < colFim - 1;
+
+      const corte = info.items
+        .filter((it) => naColuna(it) && /^Corte/i.test(it.str.trim()) && it.y < marcador.y)
+        .sort((a, b) => b.y - a.y)[0];
+      const yCorte = corte ? corte.y : 0;
+      const yBase = corte ? yCorte + 10 : 0;
+      const yTopo = Math.min(info.viewport.height, marcador.y + 14);
+
+      const itensEtiqueta = info.items.filter((it) => naColuna(it) && it.y >= yBase);
+      const pedidoEtiqueta = acharPedido(itensEtiqueta, RE_PEDIDO_ETIQUETA);
+
+      const itensCard = info.items.filter((it) => naColuna(it) && it.y < yCorte);
+      const card = parseComboCard(itensCard);
+
+      const s = RENDER_SCALE;
+      const srcX = Math.round(colIni * s);
+      const srcY = Math.round((info.viewport.height - yTopo) * s);
+      const srcW = Math.round((colFim - colIni) * s);
+      const srcH = Math.round((yTopo - yBase) * s);
+      if (srcW <= 0 || srcH <= 0) continue;
+
+      const cropCanvas = document.createElement("canvas");
+      cropCanvas.width = srcW;
+      cropCanvas.height = srcH;
+      const cropCtx = cropCanvas.getContext("2d");
+      cropCtx.fillStyle = "#ffffff";
+      cropCtx.fillRect(0, 0, srcW, srcH);
+      cropCtx.drawImage(fullCanvas, srcX, srcY, srcW, srcH, 0, 0, srcW, srcH);
+      const cropFinal = trimCanvas(cropCanvas);
+
+      unidades.push({
+        pngBytes: canvasToPngBytes(cropFinal),
+        aspect: cropFinal.width / cropFinal.height,
+        pedido: pedidoEtiqueta || card.pedido,
+        produtos: card.produtos,
+        _pagina: pi,
+      });
+    }
+  }
+
+  // Outro formato da Shopee: etiqueta numa página (10x15) e o checklist dela
+  // na página SEGUINTE, sozinho. Essas páginas de checklist não têm
+  // "DESTINATÁRIO", então não viram etiqueta; são lidas como card e casadas
+  // pelo nº do pedido, ou, sem nº, com a etiqueta da página anterior.
+  const cardsSoltos = [];
+  for (let pi = 0; pi < paginas.length; pi++) {
+    const its = paginas[pi].items;
+    if (its.some((it) => /DESTINAT[ÁA]RIO/i.test(it.str))) continue;
+    if (!/Checklist|Produto/i.test(its.map((it) => it.str).join(" "))) continue;
+    const card = parseComboCard(its);
+    if (card.produtos.length) cardsSoltos.push({ ...card, pagina: pi, usado: false });
+  }
+  if (cardsSoltos.length) {
+    for (const u of unidades) {
+      if (u.produtos && u.produtos.length) continue;
+      let c = u.pedido && cardsSoltos.find((k) => !k.usado && k.pedido && k.pedido === u.pedido);
+      if (!c) c = cardsSoltos.find((k) => !k.usado && k.pagina === u._pagina + 1);
+      if (c) {
+        c.usado = true;
+        u.produtos = c.produtos;
+        if (!u.pedido) u.pedido = c.pedido;
+      }
+    }
+  }
+  for (const u of unidades) delete u._pagina;
+  return unidades;
+}
+
+// Monta o PDF 10x15 final a partir de uma lista de etiquetas já recortadas.
+// Compartilhada por Shopee e Amazon: o que muda entre os dois é só COMO cada
+// etiqueta descobre o produto dela, não como a página é desenhada.
+async function montarPdfEtiquetas(unidades, cfg, diag, onProgress) {
+  onProgress && onProgress("Montando o PDF final...");
+  const newPdfDoc = await PDFLib.PDFDocument.create();
+  const font = await newPdfDoc.embedFont(PDFLib.StandardFonts.HelveticaBold);
+  const titlesFound = [];
+  let matched = 0;
+
+  const targetW = 283.5; // 10 cm
+  const targetH = 425; // 15 cm
+
+  for (const u of unidades) {
+    const paragraphs = montarParagrafos(u.produtos, cfg, { obs: u.obs });
+    const temInfo = paragraphs.length > 0;
+
+    // A faixa de texto fica SEMPRE embaixo, e só toma o espaço que ela
+    // realmente precisa. Com um produto só ela fica em ~10% e a etiqueta sai
+    // na largura cheia; com vários itens ela cresce e a etiqueta encolhe
+    // junto, mantendo a proporção, até o teto de 45% da altura.
+    let alturaImagem = targetH;
+    if (temInfo) {
+      const linhas = paragraphs.reduce(
+        (soma, p) => soma + wrapTextLines(p, font, cfg.tamAlvo, targetW - 20).length,
+        0
+      );
+      let faixa = (linhas + (paragraphs.length - 1) * 0.5) * cfg.tamAlvo * 1.3 + 12;
+      faixa = Math.min(Math.max(faixa, 26), targetH * 0.45);
+      alturaImagem = targetH - faixa;
+    }
+
+    const pngImage = await newPdfDoc.embedPng(u.pngBytes);
+    const newPage = newPdfDoc.addPage([targetW, targetH]);
+
+    let drawW = targetW;
+    let drawH = drawW / u.aspect;
+    if (drawH > alturaImagem) {
+      drawH = alturaImagem;
+      drawW = drawH * u.aspect;
+    }
+    // Etiqueta encostada no topo da página; o que sobra embaixo é a faixa.
+    const baseDaEtiqueta = targetH - drawH;
+    newPage.drawImage(pngImage, {
+      x: (targetW - drawW) / 2,
+      y: baseDaEtiqueta,
+      width: drawW,
+      height: drawH,
+    });
+
+    if (temInfo) {
+      // Pedido com muitos produtos diferentes: mesmo no tamanho mínimo, o texto
+      // pode não caber na faixa (que tem teto de 45% da altura da etiqueta) e
+      // ficaria sobreposto/cortado sem aviso nenhum. Usa a mesma rede de
+      // segurança do Mercado Livre: tira os últimos itens e avisa quantos
+      // ficaram de fora, em vez de desenhar por cima da imagem da etiqueta.
+      const areaDisponivel = baseDaEtiqueta - 4 - 4; // yTop (baseDaEtiqueta-4) até yBottom (4)
+      const paraDesenhar = ajustarParaCaber(paragraphs, font, targetW - 20, cfg.tamMin, areaDisponivel);
+
+      drawFittedParagraphs(newPage, paraDesenhar, {
+        x: 10,
+        yTop: baseDaEtiqueta - 4, // topo do texto = base da etiqueta
+        yBottom: 4,
+        maxWidth: targetW - 20,
+        font,
+        maxSize: cfg.tamMax,
+        minSize: cfg.tamMin,
+      });
+      titlesFound.push({ venda: u.pedido, title: paraDesenhar.join("  |  "), itens: (u.produtos || []).length, produtos: u.produtos || [] });
+      matched++;
+    }
+  }
+
+  const pdfBytes = await newPdfDoc.save();
+  diag.labelPages = unidades.length;
+  diag.matched = matched;
+  diag.unmatched = unidades.length - matched;
+  return { pdfBytes, titlesFound, diag };
+}
+
+// ============================================================
+// A PARTIR DAQUI: processamento das etiquetas da Amazon
+// ============================================================
+//
+// A Amazon separa as coisas em dois PDFs, e o casamento entre eles é o ponto
+// crítico:
+//
+//   GUIA DE REMESSA — PDF de texto, uma página por pedido, com "ID do pedido:
+//   702-XXXXXXX-XXXXXXX" e a tabela de itens. Fácil de ler.
+//
+//   ETIQUETAS — vêm como IMAGEM pura (1200x1800px, 1 bit), sem nenhum texto
+//   dentro. E, o mais importante: A ORDEM DAS ETIQUETAS NÃO É A MESMA DA GUIA.
+//   Num lote real de 15, só 1 etiqueta caiu na mesma posição. Casar por
+//   posição, como é feito no ZPL da Shopee, colocaria o produto errado em 14
+//   de 15 pacotes.
+//
+// Por isso aqui o nº do pedido é lido da imagem por OCR. E, como o conjunto de
+// pedidos válidos já é conhecido (veio da guia), o OCR não precisa ser
+// perfeito: o texto lido é comparado com a lista e só é aceito quando bate com
+// um pedido de forma inequívoca. Qualquer dúvida vira etiqueta sem produto,
+// que é sinalizada na tela — nunca um chute.
+
+const RE_ORDER_ID = /(\d{3})[^\dA-Za-z]{0,4}(\d{7})[^\dA-Za-z]{0,4}(\d{7})/;
+
+function normalizarOrderId(texto) {
+  if (!texto) return null;
+  const m = String(texto).match(RE_ORDER_ID);
+  return m ? `${m[1]}-${m[2]}-${m[3]}` : null;
+}
+
+// ------------------------------------------------------------------
+// Guia de remessa
+// ------------------------------------------------------------------
+
+const ROTULOS_ITEM = /^(SKU|ASIN|Condi[çc][ãa]o|ID do item do pedido|EAN|GTIN)\s*:/i;
+
+// Junta itens de UMA linha preservando os espaços entre palavras.
+//
+// O smartJoin usa um limiar de 30% da altura da fonte pra decidir se houve
+// espaço. Na guia da Amazon isso é grande demais: SKUs como "60x 30CM GCM
+// D-12" saíam colados ("60x30CMGCMD-12") e o rótulo "ID do item do pedido:"
+// virava "IDdoitemdopedido:", escapando do filtro e entrando no nome do
+// produto. Aqui o limiar é bem menor, e ainda é somado um espaço quando o
+// próprio item já termina ou começa com um.
+function joinLinhaComEspacos(items) {
+  let texto = "";
+  let anterior = null;
+  for (const it of [...items].sort((a, b) => a.x - b.x)) {
+    if (anterior) {
+      const gap = it.x - (anterior.x + (anterior.width || 0));
+      const limiar = Math.max(0.4, (anterior.height || 8) * 0.08);
+      const jaTemEspaco = /\s$/.test(texto) || /^\s/.test(it.str);
+      if (!jaTemEspaco && gap > limiar) texto += " ";
+    }
+    texto += it.str;
+    anterior = it;
+  }
+  return texto.replace(/\s+/g, " ").trim();
+}
+
+// Agrupa em linhas usando a junção acima, em vez da conservadora.
+function agruparLinhasComEspacos(items) {
+  const linhas = [];
+  for (const it of [...items].sort((a, b) => b.y - a.y || a.x - b.x)) {
+    const ultima = linhas[linhas.length - 1];
+    if (ultima && Math.abs(ultima.y - it.y) < 3) ultima.items.push(it);
+    else linhas.push({ y: it.y, items: [it] });
+  }
+  return linhas.map((l) => ({ y: l.y, text: joinLinhaComEspacos(l.items) }));
+}
+
+function parseGuiaPagina(items) {
+  const texto = agruparLinhasComEspacos(items)
+    .map((l) => l.text)
+    .join("\n");
+  const pedido = normalizarOrderId((texto.match(/ID do pedido:?\s*([^\n]+)/i) || [])[1]);
+  if (!pedido) return null;
+
+  // Nome e CEP do destinatário: aparecem logo abaixo de "Enviar para:", na
+  // coluna da esquerda. Servem pra identificar a etiqueta a olho nu quando o
+  // casamento automático não rola.
+  let cliente = null;
+  let cepDestino = null;
+  // Alguns geradores da Amazon devolvem "Enviar" e "para:" como itens de texto
+  // separados; outros já entregam a frase inteira "Enviar para:" como um único
+  // item (foi o caso da guia de remessa mais recente, o que fazia essa busca
+  // nunca bater e o nome/CEP do destinatário saírem sempre em branco). O match
+  // por prefixo cobre os dois formatos.
+  const enviarPara = items.find((it) => /^Enviar\b/i.test(it.str.trim()));
+  if (enviarPara) {
+    const abaixo = agruparLinhasComEspacos(
+      items.filter((it) => it.x < enviarPara.x + 280 && it.y < enviarPara.y - 2 && it.y > enviarPara.y - 160)
+    ).sort((a, b) => b.y - a.y);
+    if (abaixo.length) cliente = abaixo[0].text.trim() || null;
+    for (const l of abaixo) {
+      const m = l.text.match(/\b(\d{5}-?\d{3})\b/);
+      if (m) {
+        cepDestino = m[1].replace("-", "");
+        break;
+      }
+    }
+  }
+
+  // ATENÇÃO — este era o bug que fazia a Amazon dar sempre "Não consegui ler
+  // nenhum pedido na guia de remessa": os cabeçalhos da tabela não chegam como
+  // palavras isoladas ("Quantidade", "Detalhes", "Preço"), a Amazon manda a
+  // frase inteira grudada num único item de texto ("Detalhes do produto",
+  // "Preço unitário"). Com /^Detalhes$/i e /^Pre[çc]o$/i (match EXATO) esses
+  // dois nunca batiam em nenhuma página; "Quantidade" batia por coincidência
+  // (não tem mais nada colado nela). Sem "detalhes", a função caía direto no
+  // "return produtos: []" — a guia era lida, o ID do pedido até era
+  // reconhecido, mas nenhum produto saía dela, então byOrder ficava vazio e o
+  // processamento abortava antes mesmo de chegar nas etiquetas. Trocado para
+  // match por PREFIXO, que aceita a frase toda ou só a palavra.
+  const cabecalho = items.find((it) => /^Quantidade\b/i.test(it.str.trim()));
+  const detalhes = items.find((it) => /^Detalhes\b/i.test(it.str.trim()));
+  const preco = items.find((it) => /^Pre[çc]o\b/i.test(it.str.trim()));
+  if (!cabecalho || !detalhes) return { pedido, cliente, cepDestino, produtos: [] };
+
+  const xDetalhes = detalhes.x;
+  // A coluna da direita ("Subtotal do produto", "Total do produto") fica na
+  // mesma altura dos itens e precisa ficar de fora, senão vira produto.
+  const xLimite = preco ? preco.x - 5 : xDetalhes + 200;
+  const yCabecalho = cabecalho.y;
+
+  // O rodapé ("Pré-pago:", "Obrigado por comprar...") encerra a tabela.
+  const rodape = items
+    .filter((it) => it.y < yCabecalho && /^(Pré-pago|Pre-pago|Obrigado)/i.test(it.str.trim()))
+    .map((it) => it.y);
+  const yFim = rodape.length ? Math.max(...rodape) : -Infinity;
+
+  const naTabela = (it) => it.y < yCabecalho - 2 && it.y > yFim;
+
+  const linhasDetalhe = agruparLinhasComEspacos(
+    items.filter((it) => naTabela(it) && it.x >= xDetalhes - 5 && it.x < xLimite)
+  ).sort((a, b) => b.y - a.y);
+
+  // Cada item começa num número na coluna "Quantidade".
+  const ancoras = items
+    .filter(
+      (it) =>
+        naTabela(it) &&
+        it.x >= cabecalho.x - 5 &&
+        it.x < xDetalhes - 5 &&
+        /^\d+$/.test(it.str.trim())
+    )
+    .sort((a, b) => b.y - a.y);
+
+  const produtos = [];
+  for (let i = 0; i < Math.max(ancoras.length, 1); i++) {
+    const topo = ancoras.length ? ancoras[i].y + 4 : Infinity;
+    const base = ancoras.length && ancoras[i + 1] ? ancoras[i + 1].y + 4 : -Infinity;
+    const doItem = linhasDetalhe.filter((l) => l.y <= topo && l.y > base);
+    if (!doItem.length) continue;
+
+    const tituloPartes = [];
+    let sku = null;
+    for (const linha of doItem) {
+      const t = linha.text.trim();
+      if (!t) continue;
+      const mSku = t.match(/^SKU\s*:\s*(.+)$/i);
+      if (mSku) {
+        sku = mSku[1].trim();
+        continue;
+      }
+      if (ROTULOS_ITEM.test(t)) continue;
+      tituloPartes.push(t);
+    }
+    let title = tituloPartes.join(" ").replace(/\s+/g, " ").replace(/\s*-\s*$/, "").trim();
+    if (!title) continue;
+    produtos.push({
+      title,
+      sku,
+      skuPai: null,
+      variacao: null,
+      qtd: ancoras.length ? ancoras[i].str.trim() : null,
+    });
+  }
+  return { pedido, cliente, cepDestino, produtos };
+}
+
+async function parseGuiaAmazon(bytes, onProgress) {
+  const doc = await pdfjsLib.getDocument({ data: bytes.slice(0) }).promise;
+  const byOrder = {};
+  const infoPedido = {};
+  for (let i = 1; i <= doc.numPages; i++) {
+    onProgress && onProgress(`Lendo a guia de remessa: página ${i} de ${doc.numPages}...`);
+    const page = await doc.getPage(i);
+    const tc = await page.getTextContent();
+    const items = tc.items
+      .filter((it) => it.str && it.str.trim())
+      .map((it) => ({
+        str: it.str,
+        x: it.transform[4],
+        y: it.transform[5],
+        width: it.width || 0,
+        height: it.height || 8,
+      }));
+    const r = parseGuiaPagina(items);
+    if (!r || !r.produtos.length) continue;
+    if (byOrder[r.pedido]) byOrder[r.pedido].push(...r.produtos);
+    else byOrder[r.pedido] = r.produtos;
+    infoPedido[r.pedido] = { cliente: r.cliente, cep: r.cepDestino };
+  }
+  return { byOrder, infoPedido };
+}
+
+// ------------------------------------------------------------------
+// Casamento tolerante a erro de OCR
+// ------------------------------------------------------------------
+
+function distanciaEdicao(a, b) {
+  const m = a.length;
+  const n = b.length;
+  let anterior = Array.from({ length: n + 1 }, (_, j) => j);
+  for (let i = 1; i <= m; i++) {
+    const atual = [i];
+    for (let j = 1; j <= n; j++) {
+      atual[j] = Math.min(
+        anterior[j] + 1,
+        atual[j - 1] + 1,
+        anterior[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1)
+      );
+    }
+    anterior = atual;
+  }
+  return anterior[n];
+}
+
+// Aceita o pedido só quando há UM candidato claramente melhor que os demais.
+// Empate ou diferença grande demais => devolve null, e a etiqueta sai marcada
+// como não identificada em vez de receber o produto de outro comprador.
+function casarPedido(lido, conhecidos) {
+  if (!lido) return null;
+  if (conhecidos.includes(lido)) return lido;
+
+  const so = (s) => s.replace(/\D/g, "");
+  const alvo = so(lido);
+  const notas = conhecidos
+    .map((c) => ({ id: c, dist: distanciaEdicao(alvo, so(c)) }))
+    .sort((a, b) => a.dist - b.dist);
+
+  if (!notas.length) return null;
+  const melhor = notas[0];
+  const segundo = notas[1];
+  if (melhor.dist > 2) return null;
+  if (segundo && segundo.dist - melhor.dist < 2) return null;
+  return melhor.id;
+}
+
+// ------------------------------------------------------------------
+// Etiquetas
+// ------------------------------------------------------------------
+
+let tesseractPromise = null;
+function carregarTesseract() {
+  if (tesseractPromise) return tesseractPromise;
+  tesseractPromise = new Promise((resolve, reject) => {
+    if (window.Tesseract) return resolve(window.Tesseract);
+    const s = document.createElement("script");
+    s.src = "https://unpkg.com/tesseract.js@5.1.1/dist/tesseract.min.js";
+    s.onload = () => resolve(window.Tesseract);
+    s.onerror = () => reject(new Error("Não consegui carregar o leitor de imagem (precisa de internet na primeira vez)."));
+    document.head.appendChild(s);
+  });
+  return tesseractPromise;
+}
+
+async function unitsFromAmazonLabels(bytes, conhecidos, onProgress) {
+  const doc = await pdfjsLib.getDocument({ data: bytes.slice(0) }).promise;
+  const unidades = [];
+  let worker = null;
+  let ocrIndisponivel = null;
+
+  try {
+    for (let p = 1; p <= doc.numPages; p++) {
+      const page = await doc.getPage(p);
+
+      // Caminho rápido: se a etiqueta tiver texto de verdade, nada de OCR.
+      const tc = await page.getTextContent();
+      const textoPagina = tc.items.map((it) => it.str).join(" ");
+      let pedido = null;
+      const mTexto = textoPagina.match(/Order\s*I[dD]\s*:?\s*([^\n]{0,40})/i);
+      if (mTexto) pedido = normalizarOrderId(mTexto[1]);
+
+      const viewport1 = page.getViewport({ scale: 1 });
+      const renderViewport = page.getViewport({ scale: RENDER_SCALE });
+      const canvas = document.createElement("canvas");
+      canvas.width = Math.ceil(renderViewport.width);
+      canvas.height = Math.ceil(renderViewport.height);
+      const ctx = canvas.getContext("2d");
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      await page.render({ canvasContext: ctx, viewport: renderViewport }).promise;
+
+      if (!pedido) {
+        // A etiqueta é imagem: o nº do pedido só existe como pixel.
+        // O OCR roda num Web Worker. Se a ferramenta foi aberta direto do
+        // disco (endereço file://), o navegador bloqueia esse worker e o OCR
+        // simplesmente não roda — por isso a falha aqui NÃO derruba o
+        // processo: cai no pareamento manual, que funciona sempre.
+        if (!worker && !ocrIndisponivel) {
+          try {
+            onProgress && onProgress("Preparando o leitor de imagem (só na primeira vez)...");
+            const Tesseract = await carregarTesseract();
+            worker = await Tesseract.createWorker("eng");
+          } catch (e) {
+            ocrIndisponivel = e && e.message ? e.message : "leitor de imagem indisponível";
+          }
+        }
+        if (worker) {
+          onProgress && onProgress(`Lendo o nº do pedido da etiqueta ${p} de ${doc.numPages}...`);
+          // Recorta só a faixa onde o "Order ID" aparece nos dois layouts da
+          // Amazon (AMZL e Total Express), em vez da página inteira.
+          const recorte = document.createElement("canvas");
+          recorte.width = Math.round(canvas.width * 0.72);
+          recorte.height = Math.round(canvas.height * 0.32);
+          recorte
+            .getContext("2d")
+            .drawImage(canvas, 0, Math.round(canvas.height * 0.1), recorte.width, recorte.height, 0, 0, recorte.width, recorte.height);
+          try {
+            const { data } = await worker.recognize(recorte);
+            pedido = normalizarOrderId(data.text);
+          } catch (e) {
+            pedido = null;
+          }
+        }
+      }
+
+      // Miniatura da faixa do destinatário: é o que aparece na tela de
+      // pareamento manual, pra dar pra reconhecer a etiqueta de bate-pronto.
+      const mini = document.createElement("canvas");
+      const larguraMini = 520;
+      const alturaFaixa = Math.round(canvas.height * 0.3);
+      mini.width = larguraMini;
+      mini.height = Math.round((alturaFaixa / canvas.width) * larguraMini);
+      const mctx = mini.getContext("2d");
+      mctx.fillStyle = "#ffffff";
+      mctx.fillRect(0, 0, mini.width, mini.height);
+      mctx.drawImage(canvas, 0, Math.round(canvas.height * 0.03), canvas.width, alturaFaixa, 0, 0, mini.width, mini.height);
+
+      const cortado = trimCanvas(canvas);
+      unidades.push({
+        pngBytes: canvasToPngBytes(cortado),
+        aspect: cortado.width / cortado.height,
+        pedido: casarPedido(pedido, conhecidos),
+        pedidoLido: pedido,
+        miniatura: mini.toDataURL("image/png"),
+      });
+    }
+  } finally {
+    if (worker) {
+      try {
+        await worker.terminate();
+      } catch (e) {
+        /* ignora */
+      }
+    }
+  }
+  return { unidades, ocrIndisponivel };
+}
+
+// Tela de pareamento manual. Aparece quando alguma etiqueta ficou sem pedido
+// — tipicamente porque o OCR não pôde rodar. Mostra a faixa do destinatário de
+// cada etiqueta ao lado de uma lista com os pedidos da guia, e devolve as
+// escolhas. É trabalho manual, mas é rápido e nunca coloca produto errado.
+function pedirPareamentoManual(unidades, byOrder, infoPedido, aviso) {
+  return new Promise((resolve) => {
+    const pedidos = Object.keys(byOrder);
+    const rotulo = (id) => {
+      const info = infoPedido[id] || {};
+      const p = (byOrder[id] || [])[0] || {};
+      const partes = [info.cliente || id.slice(-8)];
+      if (info.cep) partes.push("CEP " + info.cep);
+      if (p.sku) partes.push(p.sku);
+      return partes.join(" · ");
+    };
+
+    const linhas = unidades
+      .map((u, i) => {
+        const opcoes = [`<option value="">— escolher —</option>`]
+          .concat(
+            pedidos.map(
+              (id) =>
+                `<option value="${escapeHtml(id)}"${u.pedido === id ? " selected" : ""}>${escapeHtml(rotulo(id))}</option>`
+            )
+          )
+          .join("");
+        return `<div class="par-linha">
+          <img src="${u.miniatura}" alt="Etiqueta ${i + 1}" />
+          <div><span class="par-num">Etiqueta ${i + 1}</span>
+          <select data-idx="${i}">${opcoes}</select></div>
+        </div>`;
+      })
+      .join("");
+
+    titlesPreviewEl.innerHTML = `
+      <h2>Parear etiquetas com os pedidos</h2>
+      <p class="dica">${escapeHtml(aviso)}</p>
+      <div id="pareamento">${linhas}</div>
+      <a id="confirmarPar" class="btn" style="margin-top:14px;display:inline-block;cursor:pointer">Gerar PDF com esses pareamentos</a>`;
+
+    document.getElementById("confirmarPar").addEventListener("click", () => {
+      const selects = titlesPreviewEl.querySelectorAll("#pareamento select");
+      selects.forEach((sel) => {
+        const u = unidades[parseInt(sel.dataset.idx, 10)];
+        u.pedido = sel.value || null;
+      });
+      titlesPreviewEl.innerHTML = "";
+      resolve();
+    });
+  });
+}
+
+async function processAmazon(cls, onProgress, cfg) {
+  if (!cls.amazonGuia) {
+    throw new Error(
+      "Achei as etiquetas da Amazon, mas falta a guia de remessa. Baixe as duas coisas e solte as duas aqui — as etiquetas sozinhas não dizem qual produto é de qual pedido."
+    );
+  }
+  if (!cls.amazonEtiquetas) {
+    throw new Error("Achei a guia de remessa da Amazon, mas falta o PDF das etiquetas.");
+  }
+
+  const { byOrder, infoPedido } = await parseGuiaAmazon(cls.amazonGuia.bytes, onProgress);
+  const conhecidos = Object.keys(byOrder);
+  if (!conhecidos.length) {
+    throw new Error("Não consegui ler nenhum pedido na guia de remessa.");
+  }
+
+  const { unidades, ocrIndisponivel } = await unitsFromAmazonLabels(
+    cls.amazonEtiquetas.bytes,
+    conhecidos,
+    onProgress
+  );
+
+  let modo = "pelo nº do pedido lido na etiqueta";
+  const semPedido = unidades.filter((u) => !u.pedido).length;
+
+  if (semPedido > 0) {
+    const aviso = ocrIndisponivel
+      ? "A leitura automática do nº do pedido não pôde rodar neste navegador (isso acontece quando a ferramenta é aberta direto do disco). Confira o destinatário na faixa de cada etiqueta e escolha o pedido correspondente."
+      : `${semPedido} etiqueta(s) não foram identificadas automaticamente. Confira o destinatário e escolha o pedido de cada uma.`;
+    setStatus("Aguardando o pareamento das etiquetas...");
+    await pedirPareamentoManual(unidades, byOrder, infoPedido, aviso);
+    modo = ocrIndisponivel ? "escolhido manualmente" : "automático, com ajuste manual";
+  }
+
+  for (const u of unidades) {
+    if (u.pedido && byOrder[u.pedido]) u.produtos = byOrder[u.pedido];
+  }
+
+  const diag = {
+    dataSource: `Guia de remessa da Amazon — ${conhecidos.length} pedido(s)`,
+    matchMode: modo,
+    folhaPagesRemovidas: 0,
+  };
+  return montarPdfEtiquetas(unidades, cfg, diag, onProgress);
+}
+
+
+async function processShopee(cls, onProgress, cfg) {
+  // 1) De onde vêm os produtos
+  let byOrder = {};
+  let byTracking = {};
+  let obsByOrder = {};
+  let obsByTracking = {};
+  let sequence = [];
+  let dataSource = null;
+
+  if (cls.excel) {
+    onProgress && onProgress("Lendo a lista de empacotamento (Excel)...");
+    const parsed = parsePackingListExcel(cls.excel.bytes);
+    byOrder = parsed.byOrder;
+    byTracking = parsed.byTracking;
+    obsByOrder = parsed.obsByOrder;
+    obsByTracking = parsed.obsByTracking;
+    sequence = parsed.sequence;
+    dataSource = `Excel — ${sequence.length} pedido(s)`;
+  } else if (cls.shopeeChecklistPdf) {
+    onProgress && onProgress("Sem Excel — tentando ler o checklist em PDF...");
+    const doc = await pdfjsLib.getDocument({ data: cls.shopeeChecklistPdf.bytes.slice(0) }).promise;
+    for (let i = 1; i <= doc.numPages; i++) {
+      const page = await doc.getPage(i);
+      const tc = await page.getTextContent();
+      const items = tc.items
+        .filter((it) => it.str && it.str.trim())
+        .map((it) => ({
+          str: it.str,
+          x: it.transform[4],
+          y: it.transform[5],
+          width: it.width || 0,
+          height: it.height || 8,
+        }));
+      Object.assign(byOrder, extractShopeeChecklist(items));
+    }
+    sequence = Object.keys(byOrder).map((p) => ({ pedido: p, tracking: null, produtos: byOrder[p] }));
+    dataSource = `Checklist em PDF (modo reserva) — ${sequence.length} pedido(s)`;
+  }
+
+  // 2) De onde vêm as etiquetas
+  let unidades;
+  let matchMode;
+  if (cls.shopeeComboPdf) {
+    unidades = await unitsFromComboPdf(cls.shopeeComboPdf.bytes, onProgress);
+    matchMode = "checklist que já vem junto de cada etiqueta";
+    if (!dataSource) {
+      const comProduto = unidades.filter((u) => u.produtos && u.produtos.length).length;
+      dataSource = `Checklist embutido no próprio PDF — ${comProduto} pedido(s)`;
+    }
+  } else if (cls.zpl) {
+    onProgress && onProgress("Decodificando as etiquetas ZPL...");
+    unidades = unitsFromZpl(cls.zpl.text);
+    matchMode = "posicional (ZPL é bitmap, não tem o nº do pedido legível)";
+  } else {
+    unidades = await unitsFromLabelPdf(cls.shopeeEtiquetaPdf.bytes, onProgress);
+    matchMode = "pelo nº do pedido lido na etiqueta";
+  }
+
+  if (unidades.length === 0) {
+    throw new Error("Não consegui extrair nenhuma etiqueta desse arquivo.");
+  }
+
+  // Se as etiquetas trazem o pedido, mas nenhuma delas bate com o Excel,
+  // cai pro posicional em vez de gerar tudo em branco.
+  const temPedidoLegivel = unidades.some((u) => u.pedido);
+  const jaTemProdutos = unidades.some((u) => u.produtos && u.produtos.length);
+  const algumBate = unidades.some((u) => u.pedido && byOrder[u.pedido]);
+  const usarPosicional =
+    !jaTemProdutos && (!temPedidoLegivel || (!algumBate && sequence.length > 0));
+  if (usarPosicional && temPedidoLegivel) {
+    matchMode = "posicional (nenhum nº de pedido da etiqueta bateu com o Excel)";
+  }
+
+  // 3) Resolve qual produto pertence a cada etiqueta
+  for (let i = 0; i < unidades.length; i++) {
+    const u = unidades[i];
+    if (u.produtos && u.produtos.length) {
+      // checklist que veio colado na própria etiqueta
+    } else if (!usarPosicional && u.pedido && byOrder[u.pedido]) {
+      u.produtos = byOrder[u.pedido];
+      u.obs = obsByOrder[u.pedido];
+    } else if (!usarPosicional && u.tracking && byTracking[u.tracking]) {
+      u.produtos = byTracking[u.tracking];
+      u.obs = obsByTracking[u.tracking];
+    } else if (usarPosicional && sequence[i]) {
+      u.produtos = sequence[i].produtos;
+      u.obs = sequence[i].obs;
+      u.pedido = u.pedido || sequence[i].pedido;
+    }
+    if (!u.obs && u.pedido && obsByOrder[u.pedido]) u.obs = obsByOrder[u.pedido];
+  }
+
+  // 4) Ordena, se o usuário pediu. É feito ANTES de desenhar, e só sobre
+  // etiquetas que já sabem o próprio produto — as sem identificação vão pro
+  // fim, pra ficarem fáceis de achar e conferir.
+  if (cfg.ordenacao) {
+    const colator = new Intl.Collator("pt-BR", { numeric: true, sensitivity: "base" });
+    unidades = unidades
+      .map((u, i) => ({ u, i }))
+      .sort((a, b) => {
+        const temA = a.u.produtos && a.u.produtos.length ? 0 : 1;
+        const temB = b.u.produtos && b.u.produtos.length ? 0 : 1;
+        if (temA !== temB) return temA - temB;
+        const cmp = colator.compare(
+          chaveOrdenacao(a.u.produtos, cfg.ordenacao),
+          chaveOrdenacao(b.u.produtos, cfg.ordenacao)
+        );
+        return cmp !== 0 ? cmp : a.i - b.i;
+      })
+      .map((o) => o.u);
+  }
+
+  const diag = {
+    dataSource: dataSource || "nenhuma — faltou a lista de empacotamento",
+    matchMode,
+    folhaPagesRemovidas: cls.shopeeChecklistPdf ? 1 : 0,
+  };
+  return montarPdfEtiquetas(unidades, cfg, diag, onProgress);
+}
+
+// ------------------------------------------------------------------
+// Leitura do "Checklist de carregamento" (Shopee)
+// ------------------------------------------------------------------
+// A Shopee desenha cada card de checklist rotacionado 90° dentro do PDF.
+// Isso NÃO embaralha o conteúdo de cada item de texto (cada item que o
+// pdf.js devolve já vem com a palavra/frase certa, ex.: "ESCAPAMENTO
+// ESPORTIVO TORO" ou "260722AEW5Y5UH package 1", inteiros e corretos) — o
+// que muda é só a posição x/y de cada item, então é isso que precisa ser
+// reconstruído:
+//   • cada checklist ("card") fica numa faixa de X própria, já que ficam
+//     lado a lado na página — dá pra usar o próprio marcador
+//     "<pedido> package <n>" (que sempre sai como um item inteiro) como
+//     âncora de X de cada card, e jogar cada item pro card cuja âncora
+//     tem o X mais próximo.
+//   • dentro de um card, o Y de cada item corresponde à MESMA coluna da
+//     tabela original (Produto / Variação / Qnt / SKU) — o cabeçalho e os
+//     dados de uma coluna compartilham exatamente o mesmo Y — então dá
+//     pra descobrir a coluna de cada item comparando com o Y dos rótulos
+//     do cabeçalho.
+//   • e o X (dentro do card) diferencia as LINHAS da tabela (produto 1,
+//     produto 2, ...) e as quebras de linha de um mesmo campo — usamos os
+//     valores da coluna "Qnt" (curtos, não quebram) como âncora de linha.
+
+function extractShopeeChecklist(items) {
+  const clean = items.filter((it) => it.str && it.str.trim());
+  if (clean.length === 0) return {};
+
+  // 1) separa a página em colunas (esquerda/direita) pelo x, achando o
+  // maior "buraco" entre valores de x ordenados — a mesma técnica já usada
+  // do lado do Mercado Livre em extractTitlesFromFolha().
+  const xs = [...new Set(clean.map((it) => it.x))].sort((a, b) => a - b);
+  let columns;
+  if (xs.length < 2) {
+    columns = [clean];
+  } else {
+    let boundary = null;
+    let maxGap = 0;
+    for (let i = 1; i < xs.length; i++) {
+      const gap = xs[i] - xs[i - 1];
+      if (gap > maxGap) {
+        maxGap = gap;
+        boundary = (xs[i] + xs[i - 1]) / 2;
+      }
+    }
+    columns = [clean.filter((it) => it.x < boundary), clean.filter((it) => it.x >= boundary)];
+  }
+
+  const result = {};
+  for (const colItems of columns) {
+    if (colItems.length === 0) continue;
+    Object.assign(result, extractShopeeChecklistColumn(colItems));
+  }
+  return result;
+}
+
+// Dentro de uma coluna pode haver vários checklists empilhados um em cima
+// do outro (a Shopee empilha vários pedidos por coluna quando cabem na
+// página). O "<pedido> package <n>" de cada card sai como um item de texto
+// inteiro e correto — mas não dá pra usar a posição dele sozinha como
+// "centro" do card pra decidir de quem é cada pedaço de texto, porque ele
+// não fica centralizado dentro do próprio card (fica perto de uma borda).
+//
+// O que É estável: dentro de uma coluna, os rótulos do cabeçalho (Produto /
+// Variação / Qnt / SKU) se repetem uma vez por card empilhado, sempre no
+// mesmo x, cada ocorrência num y diferente — e a ORDEM dessas ocorrências
+// (de cima pra baixo) é a mesma pra todos os rótulos e pro marcador de
+// pedido, já que é o mesmo template só deslocado verticalmente. Então dá
+// pra casar o pedido nº i (ordenado por y) com a ocorrência nº i de cada
+// rótulo de coluna, pra saber o y exato de cada campo daquele card
+// específico — e só então classificar cada pedaço de texto pelo y mais
+// próximo entre TODOS os (card, campo) da coluna.
+function extractShopeeChecklistColumn(items) {
+  const anchors = [];
+  for (const it of items) {
+    const m = it.str.trim().match(/^(\S+)\s+package\s+(\d+)$/i);
+    if (m) anchors.push({ pedido: m[1], y: it.y });
+  }
+  if (anchors.length === 0) return {};
+  anchors.sort((a, b) => a.y - b.y);
+
+  function sortedYs(label) {
+    return items
+      .filter((it) => it.str.trim() === label)
+      .map((it) => it.y)
+      .sort((a, b) => a - b);
+  }
+  const produtoYs = sortedYs("Produto");
+  const variacaoYs = sortedYs("Variação");
+  const qntYs = sortedYs("Qnt");
+  const skuYs = sortedYs("SKU");
+
+  const cards = anchors.map((a, i) => ({
+    pedido: a.pedido,
+    produtoY: produtoYs[i],
+    variacaoY: variacaoYs[i],
+    qntY: qntYs[i],
+    skuY: skuYs[i],
+  }));
+
+  const TOL = 3;
+  const CHECKLIST_NOISE = new Set([
+    "Checklist de carregamento",
+    "Corte aqui",
+    "ID Pedido",
+    "Atenção vendedor: esta lista não deverá ser anexada aos seus pacotes.",
+    "Seu uso deve ser unicamente para o controle dos seus envios.",
+    "✔",
+    "Produto",
+    "Variação",
+    "Qnt",
+    "SKU",
+  ]);
+
+  const byCard = {};
+  for (const c of cards) byCard[c.pedido] = [];
+
+  for (const it of items) {
+    const s = it.str.trim();
+    if (!s || CHECKLIST_NOISE.has(s) || /^(\S+)\s+package\s+(\d+)$/i.test(s)) continue;
+
+    let bestCard = null;
+    let bestField = null;
+    let bestDist = Infinity;
+    for (const c of cards) {
+      const candidates = [
+        ["produto", c.produtoY],
+        ["variacao", c.variacaoY],
+        ["qnt", c.qntY],
+        ["sku", c.skuY],
+      ];
+      for (const [field, y] of candidates) {
+        if (y === undefined) continue;
+        const d = Math.abs(it.y - y);
+        if (d < bestDist) {
+          bestDist = d;
+          bestCard = c.pedido;
+          bestField = field;
+        }
+      }
+    }
+    if (bestCard !== null && bestDist < TOL) {
+      byCard[bestCard].push({ x: it.x, y: it.y, str: it.str, field: bestField });
+    }
+  }
+
+  const result = {};
+  for (const c of cards) result[c.pedido] = buildProductsFromFieldItems(byCard[c.pedido]);
+  return result;
+}
+
+// Junta os itens já classificados por (campo) numa lista de produtos: usa o
+// x pra separar linhas (produto 1, produto 2, ...) e juntar quebras de
+// linha de um mesmo campo — os valores da coluna "Qnt" (curtos, não
+// quebram linha) servem de âncora de cada linha/produto.
+function buildProductsFromFieldItems(fieldItems) {
+  const qntItems = fieldItems.filter((it) => it.field === "qnt").sort((a, b) => a.x - b.x);
+  if (qntItems.length === 0) return [];
+
+  function nearestRow(x) {
+    let best = 0;
+    let bestDist = Math.abs(x - qntItems[0].x);
+    for (let i = 1; i < qntItems.length; i++) {
+      const d = Math.abs(x - qntItems[i].x);
+      if (d < bestDist) {
+        bestDist = d;
+        best = i;
+      }
+    }
+    return best;
+  }
+
+  const rows = qntItems.map((it) => ({ qtd: it.str.trim(), produto: [], variacao: [], sku: [] }));
+  for (const it of fieldItems) {
+    if (it.field === "qnt") continue;
+    rows[nearestRow(it.x)][it.field].push({ x: it.x, s: it.str.trim() });
+  }
+
+  return rows
+    .map((r) => ({
+      title: r.produto
+        .sort((a, b) => a.x - b.x)
+        .map((o) => o.s)
+        .join(" "),
+      variacao:
+        r.variacao
+          .sort((a, b) => a.x - b.x)
+          .map((o) => o.s)
+          .join(" ") || null,
+      sku:
+        r.sku
+          .sort((a, b) => a.x - b.x)
+          .map((o) => o.s)
+          .join(" ") || null,
+      qtd: r.qtd,
+    }))
+    .filter((p) => p.title);
+}
+
+</script>
+</body>
+</html>
