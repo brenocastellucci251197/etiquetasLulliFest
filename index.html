@@ -177,7 +177,7 @@
 
 <header>
   <div class="logo-dot"></div>
-  <h1>LULLIFEST — Etiquetas e caixas por cor <span style="font-size:13px;font-weight:500;color:#888;vertical-align:middle">versão 26/10 · 13h45</span></h1>
+  <h1>LULLIFEST — Etiquetas e caixas por cor <span style="font-size:13px;font-weight:500;color:#888;vertical-align:middle">versão 03/11 · 14h45</span></h1>
 </header>
 
 <div class="container">
@@ -1051,6 +1051,7 @@ function caixasLulli(p, cfg) {
     // Na Bali Borda, ouro/prata é a cor da BORDA: sai da lista de cores da
     // forminha (de qualquer origem, até da variação "Vermelho, Ouro") e vai
     // colado em cada cor: "VERMELHO OURO", "BRANCO PRATA".
+    const antesDoAcabamento = cores;
     cores = cores
       .map((c) => {
         const base = limparTexto(c.nome.replace(RE_PALAVRA_ACABAMENTO, " "));
@@ -1061,6 +1062,12 @@ function caixasLulli(p, cfg) {
     cores = cores.filter((c) => (vistos.has(c.canon) ? false : vistos.add(c.canon)));
     if (acabamento) {
       cores = cores.map((c) => ({ canon: c.canon + " " + acabamento, nome: c.nome + " " + acabamento }));
+    }
+    // Variação só "OURO" (ou "PRATA"): a forminha é toda dessa cor — não
+    // sobrou outra cor depois de tirar o acabamento, então ele É a cor.
+    if (!cores.length && antesDoAcabamento.length) {
+      const nome = acabamento || antesDoAcabamento[0].nome;
+      cores = [{ canon: normalizarCor(nome), nome }];
     }
   } else if (!/^variação/.test(origem) && modelo) {
     // Outros modelos (ex.: "Flor Beauty Ouro"): palavra cadastrada como
