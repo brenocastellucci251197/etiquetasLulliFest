@@ -177,7 +177,7 @@
 
 <header>
   <div class="logo-dot"></div>
-  <h1>LULLIFEST — Etiquetas e caixas por cor <span style="font-size:13px;font-weight:500;color:#888;vertical-align:middle">versão 03/11 · 14h45</span></h1>
+  <h1>LULLIFEST — Etiquetas e caixas por cor <span style="font-size:13px;font-weight:500;color:#888;vertical-align:middle">versão 06/11 · 10h20</span></h1>
 </header>
 
 <div class="container">
@@ -288,7 +288,7 @@
     </label>
     <label class="campo">
       <span>Abreviações de cor (SKU/variação) — abreviação=nome completo</span>
-      <input type="text" id="lAbrev" value="OffW=Off White, OW=Off White, Pc=Pistache Claro, Pe=Pistache Escuro, PistacheC=Pistache Claro, PistacheCl=Pistache Claro, Pclaro=Pistache Claro, PistacheE=Pistache Escuro, PistacheEs=Pistache Escuro, PistacheEsc=Pistache Escuro, Pescuro=Pistache Escuro, Vm=Verde Musgo, Vmusgo=Verde Musgo, LKraft=Laranja Kraft, LK=Laranja Kraft" />
+      <input type="text" id="lAbrev" value="OffW=Off White, OW=Off White, Pc=Pistache Claro, Pe=Pistache Escuro, PistacheC=Pistache Claro, PistacheCl=Pistache Claro, Pclaro=Pistache Claro, PistacheE=Pistache Escuro, PistacheEs=Pistache Escuro, PistacheEsc=Pistache Escuro, Pescuro=Pistache Escuro, Vm=Verde Musgo, Vmusgo=Verde Musgo, LKraft=Laranja Kraft, LK=Laranja Kraft, AzClaro=Azul Claro, AzCandy=Azul Candy, AzMarinho=Azul Marinho, AzRoyal=Azul Royal" />
     </label>
     <label class="campo">
       <span>Cores compostas — 2ª palavra que NÃO é outra cor (ex.: “Azul-celeste” = 1 cor só)</span>
@@ -463,6 +463,7 @@ const CORES_LULLI = [
   ["VERDE ÁGUA", "verde\\s+[áa]gua"],
   ["VERDE BANDEIRA", "verde\\s+bandeira"],
   ["VERDE MILITAR", "verde\\s+militar"],
+  ["ROSA NUDE", "rosa\\s*nude"],
   ["ROSA BEBÊ", "rosa\\s+beb[eê]"],
   ["ROSA CLARO", "rosa\\s+claro"],
   ["ROSA PINK", "rosa\\s+pink"],
@@ -626,9 +627,13 @@ function pedacoNaoECor(t) {
 }
 
 function cortarCores(texto) {
+  // "Azul-claro Ouro": hífen colado antes de um complemento ("claro",
+  // "celeste", "candy"…) é parte do nome da cor, não separador.
+  const compl = RE_SO_COMPLEMENTO.source.slice(4, -2);
   const brutos = String(texto)
     // "LaranjaKraft" → "Laranja Kraft", "PistacheEscuro" → "Pistache Escuro"
     .replace(/([a-zà-ÿ])([A-ZÀ-Ý])/g, "$1 $2")
+    .replace(new RegExp("(?<=[A-Za-zÀ-ÿ])-\\s*(?=(?:" + compl + ")(?![A-Za-zÀ-ÿ]))", "gi"), " ")
     .split(RE_SEPARADOR_COR);
   const colados = [];
   for (const b of brutos) {
@@ -661,7 +666,11 @@ function cortarCores(texto) {
 }
 
 function coresPorDicionario(texto) {
-  const t = corrigirDigitacao(texto);
+  // "Laranjakraft", "pistacheescuro": separa a cor grudada no complemento.
+  const t = corrigirDigitacao(texto).replace(/[A-Za-zÀ-ÿ]+/g, (w) => {
+    const g = typeof RE_COR_GRUDADA !== "undefined" && w.match(RE_COR_GRUDADA);
+    return g ? g[1] + " " + g[2] : w;
+  });
   // Junta "Verde" + "Musgo" (e afins) quando a 2ª palavra vem colada na 1ª e
   // é um complemento de cor (lista "Cores compostas"). Sem isso, "Verde
   // Musgo" no título contava como duas cores.
