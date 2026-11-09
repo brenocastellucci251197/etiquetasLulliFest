@@ -177,7 +177,7 @@
 
 <header>
   <div class="logo-dot"></div>
-  <h1>LULLIFEST — Etiquetas e caixas por cor <span style="font-size:13px;font-weight:500;color:#888;vertical-align:middle">versão 06/11 · 10h20</span></h1>
+  <h1>LULLIFEST — Etiquetas e caixas por cor <span style="font-size:13px;font-weight:500;color:#888;vertical-align:middle">versão 09/11 · 13h55</span></h1>
 </header>
 
 <div class="container">
@@ -2596,10 +2596,12 @@ const RE_PEDIDO_CARD = [
   /ID\s*Pedido\s*([0-9A-Z]{8,})/,
   /ID\s*PEDIDO\s*([0-9A-Z]{8,})/,
 ];
+// O nº sempre tem dígito: sem essa exigência, na etiqueta Shopee Xpress o
+// texto lido como "ID pedido: Contrato: 99…" fazia "Contrato" virar o pedido.
 const RE_PEDIDO_ETIQUETA = [
-  /Pedido\s*:?\s*([0-9A-Z]{8,})/,
-  /PEDIDO\s*:?\s*([0-9A-Z]{8,})/,
-  /Pedido\s*:?\s*([0-9A-Za-z]{8,})/i,
+  /Pedido\s*:?\s*(?=[0-9A-Z]*\d)([0-9A-Z]{8,})/,
+  /PEDIDO\s*:?\s*(?=[0-9A-Z]*\d)([0-9A-Z]{8,})/,
+  /Pedido\s*:?\s*(?=[0-9A-Za-z]*\d)([0-9A-Za-z]{8,})/i,
 ];
 
 function parseComboCard(items) {
