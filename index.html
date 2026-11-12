@@ -177,7 +177,7 @@
 
 <header>
   <div class="logo-dot"></div>
-  <h1>LULLIFEST — Etiquetas e caixas por cor <span style="font-size:13px;font-weight:500;color:#888;vertical-align:middle">versão 09/11 · 13h55</span></h1>
+  <h1>LULLIFEST — Etiquetas e caixas por cor <span style="font-size:13px;font-weight:500;color:#888;vertical-align:middle">versão 12/11 · 08h05</span></h1>
 </header>
 
 <div class="container">
@@ -1725,11 +1725,22 @@ function extractTitlesFromFolha(items) {
 
   const vendaMarkers = [];
   const packIdLines = [];
+  const envioLines = [];
   for (const line of leftLines) {
     const vMatch = line.text.match(/Venda:\s*([\d ]{10,25})/i);
     if (vMatch) vendaMarkers.push({ y: line.y, number: vMatch[1].replace(/\s+/g, "") });
+    const eMatch = line.text.match(/Envio:\s*([\d ]{8,25})/i);
+    if (eMatch) envioLines.push({ y: line.y, envio: eMatch[1].replace(/\s+/g, "") });
     const pMatch = line.text.match(/Pack ID:\s*([\d ]{10,25})/i);
     if (pMatch) packIdLines.push({ y: line.y, packId: pMatch[1].replace(/\s+/g, "") });
+  }
+  // Cada pedido da folha tem "Venda:" OU "Envio:" (formato novo do ML). Um
+  // "Envio:" colado num "Venda:" (mesmo bloco) vira apelido dele; sozinho,
+  // vira o identificador do pedido.
+  for (const e of envioLines) {
+    const perto = vendaMarkers.find((m) => Math.abs(m.y - e.y) < 14);
+    if (perto) perto.envio = e.envio;
+    else vendaMarkers.push({ y: e.y, number: e.envio });
   }
   vendaMarkers.sort((a, b) => b.y - a.y);
 
@@ -1830,6 +1841,9 @@ function extractTitlesFromFolha(items) {
             if (tt) { prox = tt; break; }
           }
           continuacao = !(prox && (/Quantidade:\s*\d+/i.test(prox) || /^SKU:/i.test(prox)));
+          // Linha com cara de título de produto ("40 Uni Forminhas…", "Kit
+          // 120…") nunca é continuação de Cor, mesmo que o título quebre.
+          if (t.length >= 20 && (/^(kit\s+)?\d+\s/i.test(t) || /forminh|kit\s+\d/i.test(t))) continuacao = false;
         }
         if (continuacao) {
           current[ultimoCampo] = (current[ultimoCampo] + " " + t).replace(/\s+/g, " ").trim();
@@ -1858,6 +1872,7 @@ function extractTitlesFromFolha(items) {
       // Algumas etiquetas mostram "Pack ID:" em vez de "Venda:" — indexa pelos
       // dois números pra achar o título de qualquer um dos dois jeitos.
       if (marker.packId) results[marker.packId] = { products };
+      if (marker.envio) results[marker.envio] = { products };
     }
   }
   // Guarda a geometria bruta lida da folha. É isso que permite descobrir, sem
@@ -2085,7 +2100,9 @@ async function stampTitlesOnPdf(originalArrayBuffer, onProgress, cfg) {
       height: viewport1.height,
     });
 
-    const vendaMatch = info.pageText.match(/(?:Venda|Pack ID):\s*([\d ]{10,25})/i);
+    // O ML passou a imprimir "Envio: 485034 22726" (nº do envio) em vez de
+    // "Venda:" em parte das etiquetas; a folha traz o mesmo "Envio:".
+    const vendaMatch = info.pageText.match(/(?:Venda|Pack ID|Envio):\s*([\d ]{10,25})/i);
     if (vendaMatch) lastOrderNumber = vendaMatch[1].replace(/\s+/g, "");
 
     const info2 = lastOrderNumber ? folhaTitles[lastOrderNumber] : null;
