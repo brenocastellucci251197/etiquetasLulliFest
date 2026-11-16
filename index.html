@@ -177,7 +177,7 @@
 
 <header>
   <div class="logo-dot"></div>
-  <h1>LULLIFEST — Etiquetas e caixas por cor <span style="font-size:13px;font-weight:500;color:#888;vertical-align:middle">versão 12/11 · 08h05</span></h1>
+  <h1>LULLIFEST — Etiquetas e caixas por cor <span style="font-size:13px;font-weight:500;color:#888;vertical-align:middle">versão 16/11 · 11h35</span></h1>
 </header>
 
 <div class="container">
@@ -997,6 +997,14 @@ function caixasLulli(p, cfg) {
           : fonte.toUpperCase();
       cores = [{ canon: normalizarCor(nome), nome }];
       origem = "variação (cor dupla)";
+    } else if (coresDoSku(p.sku).length) {
+      // Sem cor na variação: na Beauty/Pompom o SKU diz a cor exata
+      // ("Beauty-24uni-RosaClaro"), enquanto o título costuma listar várias
+      // ("Flor Beauty Rosas … Rosa Claro") e virava "ROSA E ROSA CLARO".
+      const doSku = coresDoSku(p.sku).map((c) => c.nome);
+      const nome = doSku.length === 1 ? doSku[0] : doSku.join(" E ");
+      cores = [{ canon: normalizarCor(nome), nome }];
+      origem = "SKU (cor dupla)";
     } else if (cores.length > 1) {
       const nome = cores.map((c) => c.nome).join(" E ");
       cores = [{ canon: normalizarCor(nome), nome }];
