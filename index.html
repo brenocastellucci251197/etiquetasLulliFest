@@ -177,7 +177,7 @@
 
 <header>
   <div class="logo-dot"></div>
-  <h1>LULLIFEST — Etiquetas e caixas por cor <span style="font-size:13px;font-weight:500;color:#888;vertical-align:middle">versão 16/11 · 11h35</span></h1>
+  <h1>LULLIFEST — Etiquetas e caixas por cor <span style="font-size:13px;font-weight:500;color:#888;vertical-align:middle">versão 17/11 · 10h25</span></h1>
 </header>
 
 <div class="container">
@@ -620,7 +620,7 @@ function pedacoNaoECor(t) {
     /^n\s*[º°o.]?\s*\d/i.test(t) ||
     /^\d+([.,]\d+)?\s*(un|unid|unidades|cm|mm|pçs|peças)?\.?$/i.test(t) ||
     /\b(tamanho|modelo|formato|unidades?|quantidade)\b/i.test(t) ||
-    /^(kit|cores?|sortid[ao]s?|variad[ao]s?)$/i.test(t) ||
+    /^(kit|cores?|sortid[ao]s?|variad[ao]s?|flor(es)?|panton|bali|beauty|pompom|dubai)$/i.test(t) ||
     // "80 UNIDADES", "Kit 120 un", "2 Caixas": quantidade, não cor
     ((RE_UNIDADES.test(t) || /\d+\s*(?:cx|caixas?)(?![A-Za-zÀ-ÿ])/i.test(t)) && !RE_TEM_COR.test(t))
   );
@@ -706,8 +706,9 @@ const RE_INICIO_CORES_TITULO = /(?<!\d\s*)\bcor(?:es)?\b\s*:?/i;
 //   2) trecho do título depois da palavra "cores"
 //   3) dicionário de cores aplicado ao título inteiro
 function acharCoresLulli(p) {
-  if (p.variacao) {
-    let daVar = cortarCores(p.variacao);
+  const fonteCor = p.cor || p.variacao;
+  if (fonteCor) {
+    let daVar = cortarCores(fonteCor);
     // Variação que é só código ("BE- OU24"): nenhuma cor conhecida e todos os
     // pedaços com número ou de 1–3 letras. Ignora e segue pro título/SKU.
     if (daVar.length && !daVar.some((c) => RE_TEM_COR.test(c.nome)) && daVar.every((c) => /\d/.test(c.nome) || c.nome.replace(/\s/g, "").length <= 3)) daVar = [];
@@ -984,7 +985,7 @@ function caixasLulli(p, cfg) {
     // Beauty também: "Vermelho Ouro", "Branco Prata", "Pérola Rose Gold" é a
     // cor da flor + a cor da borda, numa forminha só. Variação sem nenhuma
     // cor ("BE- OU24", código) é ignorada e vale o que veio do título.
-    const fonte = limparTexto(p.variacao || "");
+    const fonte = limparTexto(p.cor || p.variacao || "");
     const partes = fonte ? cortarCores(fonte).map((c) => c.nome) : [];
     const temCorNaVar = partes.some((n) => RE_TEM_COR.test(n));
     if (fonte && temCorNaVar) {
@@ -1822,10 +1823,21 @@ function extractTitlesFromFolha(items) {
       // produto. O segundo teste pega rótulos fora da lista fixa, mas só
       // quando já há um produto aberto pra receber o atributo.
       if (ATTRIBUTE_LABEL.test(t) || (current && pareceRotuloDeAtributo(t))) {
-        const attr = t.match(/^[^:]+:\s*(.+)$/);
-        if (current && attr && attr[1].trim()) {
-          current.variacao = current.variacao ? current.variacao + ", " + attr[1].trim() : attr[1].trim();
-          ultimoCampo = "variacao";
+        // Pode vir "Personagem: Flor | Cor: Pistache claro | Nome do desenho:
+        // PANTON" numa linha só. Guarda tudo em "variacao" (pra quantidade e
+        // pra mostrar) e o que vem de "Cor:" separado em "cor": é só ele que
+        // vale como cor da forminha — senão "Flor" virava uma cor.
+        for (const parte of t.split(/\s+\|\s+/)) {
+          const attr = parte.match(/^([^:]+):\s*(.+)$/);
+          if (!current || !attr || !attr[2].trim()) continue;
+          const valor = attr[2].trim();
+          current.variacao = current.variacao ? current.variacao + ", " + valor : valor;
+          if (/^\s*cor(es)?\b/i.test(attr[1])) {
+            current.cor = current.cor ? current.cor + ", " + valor : valor;
+            ultimoCampo = "cor";
+          } else {
+            ultimoCampo = "variacao";
+          }
         }
         continue;
       }
@@ -1855,6 +1867,7 @@ function extractTitlesFromFolha(items) {
         }
         if (continuacao) {
           current[ultimoCampo] = (current[ultimoCampo] + " " + t).replace(/\s+/g, " ").trim();
+          if (ultimoCampo === "cor") current.variacao = (current.variacao + " " + t).replace(/\s+/g, " ").trim();
           continue;
         }
       }
