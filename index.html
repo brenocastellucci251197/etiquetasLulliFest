@@ -177,7 +177,7 @@
 
 <header>
   <div class="logo-dot"></div>
-  <h1>LULLIFEST — Etiquetas e caixas por cor <span style="font-size:13px;font-weight:500;color:#888;vertical-align:middle">versão 17/11 · 10h25</span></h1>
+  <h1>LULLIFEST — Etiquetas e caixas por cor <span style="font-size:13px;font-weight:500;color:#888;vertical-align:middle">versão 23/11 · 10h50</span></h1>
 </header>
 
 <div class="container">
@@ -292,7 +292,7 @@
     </label>
     <label class="campo">
       <span>Cores compostas — 2ª palavra que NÃO é outra cor (ex.: “Azul-celeste” = 1 cor só)</span>
-      <input type="text" id="lCompostas" value="Celeste, Água, Limão, Chá, Turquesa, Oliva, Musgo, Menta, Royal, Marinho, Tiffany, Candy, Bandeira, Militar, Petróleo, Piscina, Quente" />
+      <input type="text" id="lCompostas" value="Celeste, Grécia, Água, Limão, Chá, Turquesa, Oliva, Musgo, Menta, Royal, Marinho, Tiffany, Candy, Bandeira, Militar, Petróleo, Piscina, Quente" />
     </label>
     <label class="campo">
       <span>Palavra do título que NÃO é cor, por modelo (ex.: Beauty=Ouro → o “Ouro” do título da Beauty é a borda, ignora)</span>
@@ -635,9 +635,21 @@ function cortarCores(texto) {
     .replace(/([a-zà-ÿ])([A-ZÀ-Ý])/g, "$1 $2")
     .replace(new RegExp("(?<=[A-Za-zÀ-ÿ])-\\s*(?=(?:" + compl + ")(?![A-Za-zÀ-ÿ]))", "gi"), " ")
     .split(RE_SEPARADOR_COR);
+  // "Azul - Royal, Marinho e Grécia": uma cor-base seguida só de
+  // complementos é UM tom para cada complemento (Azul Royal, Azul Marinho,
+  // Azul Grécia) — e não "Azul Royal Marinho" + "Grécia".
+  const limpos = brutos.map((b) => limparTexto(expandirPedaco(limparTexto(b)))).filter(Boolean);
+  if (
+    limpos.length >= 3 &&
+    RE_TEM_COR.test(limpos[0]) &&
+    !RE_SO_COMPLEMENTO.test(limpos[0]) &&
+    limpos.slice(1).every((t) => RE_SO_COMPLEMENTO.test(t))
+  ) {
+    const base = limpos[0];
+    limpos.splice(0, limpos.length, ...limpos.slice(1).map((c) => base + " " + c));
+  }
   const colados = [];
-  for (const b of brutos) {
-    const t = limparTexto(expandirPedaco(limparTexto(b)));
+  for (const t of limpos) {
     if (colados.length && RE_SO_COMPLEMENTO.test(t)) colados[colados.length - 1] += " " + t;
     else colados.push(t);
   }
@@ -739,7 +751,7 @@ function acharCoresLulli(p) {
 // Palavras que podem compor o nome de uma cor no SKU, além das cores em si.
 // Cor grudada no complemento, comum em SKU: "Offwhite", "Laranjakraft".
 const RE_COR_GRUDADA = new RegExp(
-  "^(" + TODAS_CORES.map((c) => c[1]).join("|") + "|off)(" + MODIFICADORES_COR + "|white|candy|musgo|royal|marinho)$",
+  "^(" + TODAS_CORES.map((c) => c[1]).join("|") + "|off)(" + MODIFICADORES_COR + "|white|candy|musgo|royal|marinho|gr[eé]cia|celeste|tiffany|beb[eê])$",
   "i"
 );
 const RE_PALAVRA_DE_COR_EXTRA = /^(off|candy|musgo|quente|royal|marinho|bebe|bebê|pink|gold|white)$/i;
@@ -1227,6 +1239,9 @@ function carregarPreferencias() {
     }
     if (typeof dados.lTrocaCor === "string" && !/laranja\s*=\s*laranja\s*kraft/i.test(dados.lTrocaCor)) {
       dados.lTrocaCor = [dados.lTrocaCor.trim(), "Panton: Laranja=Laranja Kraft"].filter(Boolean).join(", ");
+    }
+    if (typeof dados.lCompostas === "string" && !/gr[eé]cia/i.test(dados.lCompostas)) {
+      dados.lCompostas = [dados.lCompostas.trim(), "Grécia"].filter(Boolean).join(", ");
     }
     if (typeof dados.lCorDupla === "string" && !/beauty/i.test(dados.lCorDupla)) {
       dados.lCorDupla = [dados.lCorDupla.trim(), "Beauty"].filter(Boolean).join(", ");
