@@ -177,7 +177,7 @@
 
 <header>
   <div class="logo-dot"></div>
-  <h1>LULLIFEST — Etiquetas e caixas por cor <span style="font-size:13px;font-weight:500;color:#888;vertical-align:middle">versão 23/11 · 10h50</span></h1>
+  <h1>LULLIFEST — Etiquetas e caixas por cor <span style="font-size:13px;font-weight:500;color:#888;vertical-align:middle">versão 23/11 · 11h00</span></h1>
 </header>
 
 <div class="container">
@@ -638,15 +638,21 @@ function cortarCores(texto) {
   // "Azul - Royal, Marinho e Grécia": uma cor-base seguida só de
   // complementos é UM tom para cada complemento (Azul Royal, Azul Marinho,
   // Azul Grécia) — e não "Azul Royal Marinho" + "Grécia".
+  // "AZUL- Candy, Claro e Marinho": o primeiro já vem com complemento
+  // (Azul Candy) — a base é só "Azul" para os seguintes (Azul Claro, Azul Marinho).
   const limpos = brutos.map((b) => limparTexto(expandirPedaco(limparTexto(b)))).filter(Boolean);
   if (
-    limpos.length >= 3 &&
+    limpos.length >= 2 &&
     RE_TEM_COR.test(limpos[0]) &&
     !RE_SO_COMPLEMENTO.test(limpos[0]) &&
     limpos.slice(1).every((t) => RE_SO_COMPLEMENTO.test(t))
   ) {
-    const base = limpos[0];
-    limpos.splice(0, limpos.length, ...limpos.slice(1).map((c) => base + " " + c));
+    const palavras = limpos[0].split(/\s+/);
+    while (palavras.length > 1 && RE_SO_COMPLEMENTO.test(palavras[palavras.length - 1])) palavras.pop();
+    const base = palavras.join(" ");
+    const temCompl = base !== limpos[0];
+    if (temCompl) limpos.splice(1, limpos.length - 1, ...limpos.slice(1).map((c) => base + " " + c));
+    else if (limpos.length >= 3) limpos.splice(0, limpos.length, ...limpos.slice(1).map((c) => base + " " + c));
   }
   const colados = [];
   for (const t of limpos) {
